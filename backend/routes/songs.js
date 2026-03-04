@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const Song = require("../models/Song");
+const verifyToken = require("../middleware/auth"); //import middleware to add auth headers to our routes
 
 // GET ROUTE (fetch first 3)
 router.get("/", async (req, res) => {
@@ -14,7 +15,7 @@ router.get("/", async (req, res) => {
 });
 
 // POST ROUTE (create Plant)
-router.post("/", async (req, res) => {
+router.post("/", verifyToken, async (req, res) => {
     const song = new Song({
         title: req.body.title,
         artist: req.body.artist,
@@ -26,7 +27,7 @@ router.post("/", async (req, res) => {
     });
 
     try {
-        const newPlant = await song.save();
+        const newSong = await song.save();
         res.status(201).json(newSong);
     } catch (err) {
         res.status(400).json({ message: err.message });
