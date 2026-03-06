@@ -29,7 +29,7 @@ function Dashboard() {
   // and the logout function (to attach to our button)
   const { token, user, logout } = useContext(AuthContext);
 
-
+  
   ////// USE EFFECT rendering ///////////////////
 
   //get the songs
@@ -39,7 +39,7 @@ function Dashboard() {
       .then((res) => res.json()) // convert the raw response to JSON
       .then((data) => setSongs(data)) // save the data into our State
       .catch((err) => console.error("Error fetching songs:", err));
-  }, []);
+    }, []);
 
   //check if frontend and backend are connected from prev lab
   useEffect(() => {
@@ -49,6 +49,13 @@ function Dashboard() {
       .then((data) => setMessage(data.message))
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
+
+  //user check
+  useEffect(() => {
+    // Note: We use the FULL URL. There is no proxy to infer the host.
+    console.log(user);
+    // console.log(user.username);
+  }, [user]);
 
   /////// HANDLERS //////////
 
@@ -125,6 +132,15 @@ function Dashboard() {
     
 
     <div className="page-container">
+
+      <div>
+        {/* <p>{user.username}</p> */}
+        {user && (
+            <h3>Welcome back, {user.username}!</h3>
+          )}
+        <button onClick={logout}>Logout</button>
+      </div>
+          
       <div className="App">
         <p>Frontend meets Backend</p>
         <p>Server says: {message}</p>

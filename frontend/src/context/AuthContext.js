@@ -19,6 +19,7 @@ export function AuthProvider({ children }) {
         // decode the JWT to get user details (like username or id)
         const decoded = jwtDecode(token);
         setUser(decoded);
+        // console.log(user);
       } catch (err) {
         console.error("Token is invalid or corrupted:", err);
         logout(); // wipe storage if the token is bad
