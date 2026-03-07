@@ -35,7 +35,7 @@ function Dashboard() {
   //get the songs
   // this runs ONLY when the component first mounts (loads onto the screen) (empty dependency array)
   useEffect(() => {
-    fetch("http://localhost:5000/api/songs")
+    fetch("http://localhost:5001/api/songs")
       .then((res) => res.json()) // convert the raw response to JSON
       .then((data) => setSongs(data)) // save the data into our State
       .catch((err) => console.error("Error fetching songs:", err));
@@ -44,7 +44,7 @@ function Dashboard() {
   //check if frontend and backend are connected from prev lab
   useEffect(() => {
     // Note: We use the FULL URL. There is no proxy to infer the host.
-    fetch("http://localhost:5000/api/hello")
+    fetch("http://localhost:5001/api/hello")
       .then((response) => response.json())
       .then((data) => setMessage(data.message))
       .catch((error) => console.error("Error fetching data:", error));
@@ -73,7 +73,7 @@ function Dashboard() {
     e.preventDefault(); // stop the browser from reloading the page (standard form behavior)
     try {
       // send the new data to the Backend
-      const response = await fetch("http://localhost:5000/api/songs", {
+      const response = await fetch("http://localhost:5001/api/songs", {
         method: "POST",
         headers: { "Content-Type": "application/json",
           // attach the token to prove user is authorized
@@ -107,7 +107,7 @@ function Dashboard() {
   const handleDelete = async (id) => {
     try {
       // tell Backend to delete the document with this specific ID
-      const response = await fetch(`http://localhost:5000/api/songs/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/songs/${id}`, {
         method: "DELETE",
         headers: {
           // attach the token to prove user is authorized
