@@ -129,33 +129,47 @@ function Dashboard() {
 
   //UI
   return (
-    
-
     <div className="page-container">
 
-      <div>
-        {/* <p>{user.username}</p> */}
-        {user && (
-            <h3>Welcome back, {user.username}!</h3>
+      {/* top bar with greeting and logout */}
+      <div className="dashboard-topbar">
+        <div className="dashboard-user">
+          <p className="dashboard-eyebrow">Music Map</p>
+          {/* <p>{user.username}</p> */}
+          {user && (
+            <h2 className="dashboard-greeting">Welcome back, {user.username}!</h2>
           )}
-        <button onClick={logout}>Logout</button>
+          <p className="dashboard-subtext">
+            Build and manage your personal song collection.
+          </p>
+        </div>
+
+        <button className="logout-btn" onClick={logout}>
+          Logout
+        </button>
       </div>
-          
-      <div className="App">
-        <p>Frontend meets Backend</p>
-        <p>Server says: {message}</p>
+
+      {/* small backend status card */}
+      <div className="status-card">
+        <p className="status-label">Frontend meets Backend</p>
+        <p className="status-message">Server says: {message}</p>
       </div>
 
       <header className="main-header">
         <h1>Song Collection Dashboard</h1>
+        <p className="header-subtext">
+          Add tracks, organize details, and browse your collection in one place.
+        </p>
       </header>
 
       <div className="content-wrapper">
         {/* left panel: data entry form*/}
         <div className="left-panel">
           <div className="card form-card">
-            
             <h3>Add New Song</h3>
+            <p className="form-description">
+              Enter song details to add a new track to your collection.
+            </p>
 
             <form onSubmit={handleSubmit} className="song-form">
               <label>Name</label>
@@ -169,6 +183,7 @@ function Dashboard() {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
+                placeholder="Enter song title"
                 required
               />
               <label>Artist</label>
@@ -176,45 +191,57 @@ function Dashboard() {
                 name="artist"
                 value={formData.artist}
                 onChange={handleChange}
+                placeholder="Enter artist name"
               />
               <label>Album</label>
               <input
                 name="album"
                 value={formData.album}
                 onChange={handleChange}
+                placeholder="Enter album name"
               />
               <label>Release Date</label>
               <input
                 name="releaseDate"
                 value={formData.releaseDate}
                 onChange={handleChange}
+                placeholder="e.g. 2024"
               />
               <label>Language</label>
               <input
                 name="language"
                 value={formData.language}
                 onChange={handleChange}
+                placeholder="Enter language"
               />
               <label>Genre</label>
               <input
                 name="genre"
                 value={formData.genre}
                 onChange={handleChange}
+                placeholder="Enter genre"
               />
               <label>Lyrics</label>
               <input
                 name="lyrics"
                 value={formData.lyrics}
                 onChange={handleChange}
+                placeholder="Optional lyric snippet"
               />
-              <button type="submit" onClick={handleSubmit}>Add Song</button>
+              <button className="primary-btn" type="submit" onClick={handleSubmit}>
+                Add Song
+              </button>
             </form>
-
           </div>
         </div>
 
         {/* right panel: the grid of songs */}
         <div className="right-panel">
+          <div className="section-heading">
+            <h3>Your Collection</h3>
+            <p>{songs.length} song(s)</p>
+          </div>
+
           <div className="song-grid">
             {/* .map() loops through the 'songs' array.
 For every song item, it creates a <div> (song-card).
@@ -232,7 +259,7 @@ ELSE (:), show the "No Image" placeholder.
                   {song.imgUrl ? (
                     <img src={song.imgUrl} alt={song.title} />
                   ) : (
-                    <div className="placeholder">No Image</div>
+                    <div className="placeholder">No Cover</div>
                   )}
                 </div>
 
@@ -270,9 +297,5 @@ loads. */}
     </div>
   );
 }
-
-
-
-
 
 export default Dashboard;
