@@ -30,7 +30,7 @@ const Register = () => {
 
       // Send a POST request to the backend registration endpoint
       // The username and password are sent in the request body
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch("http://localhost:5001/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
