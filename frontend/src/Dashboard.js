@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from "react";
 import "./App.css";
 
 import { AuthContext } from "./context/AuthContext"; // import the global "cloud" to access our token and user
 
 function Dashboard() {
-  
   /////////// STATES ////////////////
   const [message, setMessage] = useState("");
 
@@ -24,22 +23,34 @@ function Dashboard() {
     lyrics: "",
   });
 
+  // states for searching and filtering
+  const [searchQuery, setSearchQuery] = useState(""); // search input
+  const [filters, setFilters] = useState({
+    genre: [],
+    language: [],
+    releaseYear: [],
+  });
+
   // tap into our AuthContext
   // we grab the token, the decoded user object (for the greeting),
   // and the logout function (to attach to our button)
   const { token, user, logout } = useContext(AuthContext);
 
-  
   ////// USE EFFECT rendering ///////////////////
 
-  //get the songs
-  // this runs ONLY when the component first mounts (loads onto the screen) (empty dependency array)
   useEffect(() => {
-    fetch("http://localhost:5001/api/songs")
-      .then((res) => res.json()) // convert the raw response to JSON
-      .then((data) => setSongs(data)) // save the data into our State
-      .catch((err) => console.error("Error fetching songs:", err));
-    }, []);
+    const fetchSongs = async () => {
+      try {
+        const res = await fetch("http://localhost:5001/api/songs");
+        const data = await res.json();
+        setSongs(data);
+      } catch (err) {
+        console.error("Error fetching songs:", err);
+      }
+    };
+
+    fetchSongs();
+  }, []);
 
   //check if frontend and backend are connected from prev lab
   useEffect(() => {
@@ -75,7 +86,8 @@ function Dashboard() {
       // send the new data to the Backend
       const response = await fetch("http://localhost:5001/api/songs", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
+        headers: {
+          "Content-Type": "application/json",
           // attach the token to prove user is authorized
           Authorization: token,
         },
@@ -127,17 +139,60 @@ function Dashboard() {
     }
   };
 
+  // handles searching
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value); // update search query
+  };
+
+  // handles filter changees
+  const handleFilterChange = (e) => {
+    const { name, value, checked } = e.target;
+    setFilters((prevFilters) => {
+      const newFilters = { ...prevFilters };
+      if (checked) {
+        if (newFilters[name].includes(value)) return newFilters;
+        newFilters[name].push(value);
+      } else {
+        newFilters[name] = newFilters[name].filter((item) => item !== value);
+      }
+      return newFilters;
+    });
+  };
+
+  // sort songs based on filters
+  const filteredSongs = songs.filter((song) => {
+    const searchMatch =
+      song.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.artist?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.album?.toLowerCase().includes(searchQuery.toLowerCase());
+    // toLowerCase --> changes input to lowercase before searching
+
+    // searches title/artist/album while still respecting filters
+    const genreMatch =
+      filters.genre.length === 0 || filters.genre.includes(song.genre);
+
+    const languageMatch =
+      filters.language.length === 0 || filters.language.includes(song.language);
+
+    const yearMatch =
+      filters.releaseYear.length === 0 ||
+      filters.releaseYear.includes(song.releaseDate);
+
+    return searchMatch && genreMatch && languageMatch && yearMatch;
+  });
+
   //UI
   return (
     <div className="page-container">
-
       {/* top bar with greeting and logout */}
       <div className="dashboard-topbar">
         <div className="dashboard-user">
           <p className="dashboard-eyebrow">Music Map</p>
           {/* <p>{user.username}</p> */}
           {user && (
-            <h2 className="dashboard-greeting">Welcome back, {user.username}!</h2>
+            <h2 className="dashboard-greeting">
+              Welcome back, {user.username}!
+            </h2>
           )}
           <p className="dashboard-subtext">
             Build and manage your personal song collection.
@@ -148,20 +203,17 @@ function Dashboard() {
           Logout
         </button>
       </div>
-
       {/* small backend status card */}
       <div className="status-card">
         <p className="status-label">Frontend meets Backend</p>
         <p className="status-message">Server says: {message}</p>
       </div>
-
       <header className="main-header">
         <h1>Song Collection Dashboard</h1>
         <p className="header-subtext">
           Add tracks, organize details, and browse your collection in one place.
         </p>
       </header>
-
       <div className="content-wrapper">
         {/* left panel: data entry form*/}
         <div className="left-panel">
@@ -175,10 +227,10 @@ function Dashboard() {
               <label>Name</label>
 
               {/* Note on Inputs:
-- 'name' attribute must match the state key (e.g. "commonName")
-- 'value' binds the input to the state (Controlled Component)
-- 'onChange' updates the state when typing
-*/}
+                - 'name' attribute must match the state key (e.g. "commonName")
+                - 'value' binds the input to the state (Controlled Component)
+                - 'onChange' updates the state when typing
+                */}
               <input
                 name="title"
                 value={formData.title}
@@ -228,7 +280,11 @@ function Dashboard() {
                 onChange={handleChange}
                 placeholder="Optional lyric snippet"
               />
-              <button className="primary-btn" type="submit" onClick={handleSubmit}>
+              <button
+                className="primary-btn"
+                type="submit"
+                onClick={handleSubmit}
+              >
                 Add Song
               </button>
             </form>
@@ -237,6 +293,115 @@ function Dashboard() {
 
         {/* right panel: the grid of songs */}
         <div className="right-panel">
+          {/* search and filter */}
+          <div className="filters">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search by title, artist, or album"
+              className="search-bar"
+            />
+
+            <div className="filter-group">
+              <h4>Genre</h4>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="genre"
+                  value="Pop"
+                  onChange={handleFilterChange}
+                />
+                Pop
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="genre"
+                  value="Rock"
+                  onChange={handleFilterChange}
+                />
+                Rock
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="genre"
+                  value="Hip-Hop"
+                  onChange={handleFilterChange}
+                />
+                Hip-Hop
+              </label>
+
+              {/* add whatever other genres here */}
+            </div>
+
+            <div className="filter-group">
+              <h4>Language</h4>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="language"
+                  value="English"
+                  onChange={handleFilterChange}
+                />
+                English
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="language"
+                  value="Spanish"
+                  onChange={handleFilterChange}
+                />
+                French
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="language"
+                  value="Spanish"
+                  onChange={handleFilterChange}
+                />
+                Spanish
+              </label>
+
+              {/* add whatever other languages here */}
+            </div>
+
+            <div className="filter-group">
+              <h4>Release Year</h4>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="releaseYear"
+                  value="2024"
+                  onChange={handleFilterChange}
+                />
+                2024
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="releaseYear"
+                  value="2023"
+                  onChange={handleFilterChange}
+                />
+                2023
+              </label>
+            </div>
+
+            {/* add whatever other years here */}
+          </div>
+
           <div className="section-heading">
             <h3>Your Collection</h3>
             <p>{songs.length} song(s)</p>
@@ -244,18 +409,18 @@ function Dashboard() {
 
           <div className="song-grid">
             {/* .map() loops through the 'songs' array.
-For every song item, it creates a <div> (song-card).
-*/}
-            {songs.map((song) => (
+            For every song item, it creates a <div> (song-card).
+            */}
+            {filteredSongs.map((song) => (
               <div key={song._id} className="song-card">
                 {/* the 'key' prop is required by React for performance.
-It helps React track which items changed, added, or removed.
-*/}
+                It helps React track which items changed, added, or removed.
+                */}
                 <div className="image-container">
                   {/* conditional rendering:
-IF song.imgUrl exists, show the Image.
-ELSE (:), show the "No Image" placeholder.
-*/}
+                  IF song.imgUrl exists, show the Image.
+                  ELSE (:), show the "No Image" placeholder.
+                  */}
                   {song.imgUrl ? (
                     <img src={song.imgUrl} alt={song.title} />
                   ) : (
@@ -279,8 +444,8 @@ ELSE (:), show the "No Image" placeholder.
                   </p>
 
                   {/* we use an arrow function here () => handleDelete(...)
-so the function only runs when CLICKED, not when the page
-loads. */}
+                  so the function only runs when CLICKED, not when the page
+                  loads. */}
                   <button
                     className="delete-btn"
                     onClick={() => handleDelete(song._id)}
