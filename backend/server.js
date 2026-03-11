@@ -10,6 +10,7 @@ const mongoose = require("mongoose"); //for database
 //routes
 const songRoutes = require("./routes/songs");
 const authRoutes = require("./routes/auth");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 const PORT = 5001;
@@ -22,6 +23,7 @@ app.use(cors({
   origin: 'http://localhost:3000'
 }));
 
+app.use("/api/admin", adminRoutes);
 
 //database connection
 const uri = process.env.MONGO_URI;

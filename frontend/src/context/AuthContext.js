@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (token) {
       try {
-        // decode the JWT to get user details (like username or id)
+        // decode the JWT to get user details (like username or id or role)
         const decoded = jwtDecode(token);
         setUser(decoded);
         // console.log(user);

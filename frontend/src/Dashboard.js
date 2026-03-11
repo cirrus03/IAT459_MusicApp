@@ -11,6 +11,9 @@ function Dashboard() {
   // initial value is an empty array [] because we haven't fetched data yet.
   const [songs, setSongs] = useState([]);
 
+  // store the list of users for the admin view
+  const [users, setUsers] = useState([]);
+
   // store the form inputs.
   // we use a single object to hold all fields instead of creating 6 separate state variables.
   const [formData, setFormData] = useState({
@@ -67,6 +70,20 @@ function Dashboard() {
     console.log(user);
     // console.log(user.username);
   }, [user]);
+
+    // fetch the member list only if the logged-in user is an admin
+  useEffect(() => {
+    if (user?.role === "admin") {
+      fetch("http://localhost:5001/api/admin/users", {
+        headers: {
+          Authorization: token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setUsers(data))
+        .catch((err) => console.error("Error fetching users:", err));
+    }
+  }, [user, token]);
 
   /////// HANDLERS //////////
 
@@ -139,6 +156,7 @@ function Dashboard() {
     }
   };
 
+<<<<<<< Updated upstream
   // handles searching
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value); // update search query
@@ -180,6 +198,8 @@ function Dashboard() {
 
     return searchMatch && genreMatch && languageMatch && yearMatch;
   });
+=======
+>>>>>>> Stashed changes
 
   //UI
   return (
@@ -197,6 +217,30 @@ function Dashboard() {
           <p className="dashboard-subtext">
             Build and manage your personal song collection.
           </p>
+
+          {/* only show this admin section if the logged-in user has admin role */}
+          {user?.role === "admin" && (
+            <div className="admin-panel-preview">
+              <h4>Admin Access Enabled</h4>
+              <p>You have admin permissions. You can view the member list below.</p>
+
+              <div className="admin-users-list">
+                <h5>Member List</h5>
+
+                {users.length === 0 ? (
+                  <p className="admin-empty">No users found.</p>
+                ) : (
+                  users.map((member) => (
+                    <div key={member._id} className="admin-user-card">
+                      <p><strong>Username:</strong> {member.username}</p>
+                      <p><strong>Role:</strong> {member.role}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
         </div>
 
         <button className="logout-btn" onClick={logout}>

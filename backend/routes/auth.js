@@ -38,8 +38,10 @@ router.post("/login", async (req, res) => {
 
     // 3. Generate Token
     const token = jwt.sign({ 
-      id: user._id,
-      username: user.username, }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    id: user._id,
+    username: user.username,
+    role: user.role // include role so frontend knows if user is admin
+}, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     res.json({ token, user: {id: user._id, username: user.username} });
   } catch (err) {
