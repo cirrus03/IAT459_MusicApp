@@ -211,6 +211,29 @@ useEffect(() => {
     return searchMatch && genreMatch && languageMatch && yearMatch;
   });
 
+  // delete a user (admin only)
+const handleDeleteUser = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:5001/api/admin/users/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to delete user");
+    }
+
+    // update frontend state
+    setUsers(users.filter((user) => user._id !== id));
+
+  } catch (err) {
+    console.error(err);
+    alert("Could not delete user");
+  }
+};
+
   //UI
   return (
     <div className="page-container">
@@ -244,6 +267,13 @@ useEffect(() => {
                     <div key={member._id} className="admin-user-card">
                       <p><strong>Username:</strong> {member.username}</p>
                       <p><strong>Role:</strong> {member.role}</p>
+
+                      <button
+                        className="admin-delete-btn"
+                        onClick={() => handleDeleteUser(member._id)}
+                      >
+                        Delete User
+                      </button>
                     </div>
                   ))
                 )}

@@ -16,4 +16,20 @@ router.get("/users", auth, verifyAdmin, async (req, res) => {
     }
 });
 
+// DELETE a user account
+router.delete("/users/:id", verifyAdmin, async (req, res) => {
+    try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+
+    if (!deletedUser) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "User deleted successfully" });
+    } catch (err) {
+    console.error("Error deleting user:", err);
+    res.status(500).json({ error: "Server error" });
+    }
+});
+
 module.exports = router;
