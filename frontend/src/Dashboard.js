@@ -159,6 +159,7 @@ function Dashboard() {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   // handles searching
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value); // update search query
@@ -200,6 +201,8 @@ function Dashboard() {
 
     return searchMatch && genreMatch && languageMatch && yearMatch;
   });
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
