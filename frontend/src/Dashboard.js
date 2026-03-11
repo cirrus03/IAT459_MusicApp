@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import "./App.css";
 
 import { AuthContext } from "./context/AuthContext"; // import the global "cloud" to access our token and user
@@ -286,6 +287,8 @@ const handleDeleteUser = async (id) => {
         <button className="logout-btn" onClick={logout}>
           Logout
         </button>
+        <Link to="/general">View general page</Link>
+
       </div>
       {/* small backend status card */}
       <div className="status-card">
