@@ -71,19 +71,32 @@ function Dashboard() {
     // console.log(user.username);
   }, [user]);
 
-    // fetch the member list only if the logged-in user is an admin
-  useEffect(() => {
-    if (user?.role === "admin") {
-      fetch("http://localhost:5001/api/admin/users", {
-        headers: {
-          Authorization: token,
-        },
+ // fetch the member list only if the logged-in user is an admin
+useEffect(() => {
+  if (user?.role === "admin") {
+    fetch("http://localhost:5001/api/admin/users", {
+      headers: {
+        Authorization: token,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Admin users response:", data);
+
+        // only save the data if it is actually an array
+        if (Array.isArray(data)) {
+          setUsers(data);
+        } else {
+          console.error("Expected an array of users but got:", data);
+          setUsers([]);
+        }
       })
-        .then((res) => res.json())
-        .then((data) => setUsers(data))
-        .catch((err) => console.error("Error fetching users:", err));
-    }
-  }, [user, token]);
+      .catch((err) => {
+        console.error("Error fetching users:", err);
+        setUsers([]);
+      });
+  }
+}, [user, token]);
 
   /////// HANDLERS //////////
 
@@ -156,10 +169,6 @@ function Dashboard() {
     }
   };
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
   // handles searching
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value); // update search query
@@ -201,14 +210,6 @@ function Dashboard() {
 
     return searchMatch && genreMatch && languageMatch && yearMatch;
   });
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
   //UI
   return (
@@ -236,7 +237,7 @@ function Dashboard() {
               <div className="admin-users-list">
                 <h5>Member List</h5>
 
-                {users.length === 0 ? (
+                {!Array.isArray(users) || users.length === 0 ? (
                   <p className="admin-empty">No users found.</p>
                 ) : (
                   users.map((member) => (
