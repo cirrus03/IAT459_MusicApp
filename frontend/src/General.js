@@ -84,10 +84,18 @@ function General() {
         //if token is good (means they are logged in), show logout button
         //else, show log in/register
         <div>
-            <h1>General View anyone can see</h1>
-            <p>will put things here eventually</p>
+            <h1>General View</h1>
 
-            { (token) ? <button class="logout-btn" onClick={logout}>Log Out</button> :  <Link to="/login">Login</Link>}
+            { (token) ? 
+              <div>
+                <button class="logout-btn" onClick={logout}>Log Out</button>
+                <Link class="logout-btn" style={{marginBottom: "1rem"}} to="/">My Dashbboard</Link>
+              </div>
+               :
+              <div>
+                <Link class="logout-btn" style={{marginBottom: "1rem"}} to="/login">Login</Link> 
+              </div>
+            }
 
             <div class="song-view">
                 {/* right panel: the grid of songs */}

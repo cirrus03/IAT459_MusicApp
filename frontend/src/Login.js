@@ -80,7 +80,7 @@ function Login() {
       }}
     >
 
-      <Link to="/general">View general page</Link>
+      
 
       {/* Login card container */}
       <div
@@ -253,6 +253,13 @@ function Login() {
             Register here
           </Link>
         </p>
+
+        <Link style={{
+          textAlign: "center",
+          color: "#c084fc",
+          fontWeight: "700",}} to="/general">View general page</Link>
+
+        
 
       </div>
     </div>
