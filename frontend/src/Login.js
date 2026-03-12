@@ -80,6 +80,8 @@ function Login() {
       }}
     >
 
+      <Link to="/general">View general page</Link>
+
       {/* Login card container */}
       <div
         style={{
