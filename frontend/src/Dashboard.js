@@ -291,10 +291,10 @@ const handleDeleteUser = async (id) => {
 
       </div>
       {/* small backend status card */}
-      <div className="status-card">
+      {/* <div className="status-card">
         <p className="status-label">Frontend meets Backend</p>
         <p className="status-message">Server says: {message}</p>
-      </div>
+      </div> */}
       <header className="main-header">
         <h1>Song Collection Dashboard</h1>
         <p className="header-subtext">

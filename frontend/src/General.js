@@ -88,16 +88,16 @@ function General() {
 
             { (token) ? 
               <div>
-                <button class="logout-btn" onClick={logout}>Log Out</button>
-                <Link class="logout-btn" style={{marginBottom: "1rem"}} to="/">My Dashbboard</Link>
+                <button className="logout-btn" onClick={logout}>Log Out</button>
+                <Link className="logout-btn" style={{marginBottom: "1rem"}} to="/">My Dashbboard</Link>
               </div>
                :
               <div>
-                <Link class="logout-btn" style={{marginBottom: "1rem"}} to="/login">Login</Link> 
+                <Link className="logout-btn" style={{marginBottom: "1rem"}} to="/login">Login</Link> 
               </div>
             }
 
-            <div class="song-view">
+            <div className="song-view">
                 {/* right panel: the grid of songs */}
         <div className="right-panel">
           {/* search and filter */}
