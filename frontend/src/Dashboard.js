@@ -35,6 +35,12 @@ function Dashboard() {
     releaseYear: [],
   });
 
+
+  //state for holding testing lyrics
+  const [lyrics, setLyrics] = useState({
+    lyrics: ""
+  });
+
   // tap into our AuthContext
   // we grab the token, the decoded user object (for the greeting),
   // and the logout function (to attach to our button)
@@ -42,6 +48,26 @@ function Dashboard() {
 
   ////// USE EFFECT rendering ///////////////////
 
+//fetching lyric test
+   useEffect(() => {
+    const fetchLyrics = async () => {
+      try {
+        const res = await fetch("http://localhost:5001/api/lyrics");
+        const data = await res.json();
+        setLyrics(data);
+      } catch (err) {
+        console.error("Error fetching songs:", err);
+      }
+    };
+
+    fetchLyrics();
+  }, []);
+
+
+
+
+
+//fetching song list
   useEffect(() => {
     const fetchSongs = async () => {
       try {
@@ -284,6 +310,8 @@ const handleDeleteUser = async (id) => {
 
         </div>
 
+        
+
         <button className="logout-btn" onClick={logout}>
           Logout
         </button>
@@ -301,6 +329,14 @@ const handleDeleteUser = async (id) => {
           Add tracks, organize details, and browse your collection in one place.
         </p>
       </header>
+
+      <div className="lyric-testing">
+          <p>
+            {lyrics.lyrics}
+          </p>
+          <p>there should eb lyrics above me</p>
+        </div>
+
       <div className="content-wrapper">
         {/* left panel: data entry form*/}
         <div className="left-panel">

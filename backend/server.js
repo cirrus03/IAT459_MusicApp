@@ -11,6 +11,7 @@ const mongoose = require("mongoose"); //for database
 const songRoutes = require("./routes/songs");
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
+const lyricsRoutes = require("./routes/lyrics");
 
 const app = express();
 const PORT = 5001;
@@ -64,6 +65,9 @@ app.use('/api/songs', songRoutes);
 
 //authentication route
 app.use("/api/auth", authRoutes);
+
+//lyrics route
+app.use("/api/lyrics", lyricsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
