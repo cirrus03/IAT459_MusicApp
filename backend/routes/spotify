@@ -1,0 +1,59 @@
+
+
+
+require("dotenv").config( { path: 'C:/Users/selen/Documents/SCHOOL/iat459/project/IAT459_MusicApp/backend/.env' } );
+
+const express = require("express");
+const router = express.Router();
+
+
+const client_id = process.env.SPOTIFY_CLIENT_ID;
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+
+const authOptions = {
+  url: 'https://accounts.spotify.com/api/token',
+  headers: {
+    'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
+  },
+  form: {
+    grant_type: 'client_credentials'
+  },
+  json: true
+};
+
+
+router.post("/auth", authOptions, async (req, res, err) => {
+    try {
+        console.log("inside the try block");
+        const response = await fetch(authOptions.url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': "application/json",
+            'Authorization': "Basic" + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
+          },
+          form: {
+            grant_type: 'client_credentials'
+          },
+          json: true
+        });
+        res.json(data);
+        console.log(data);
+
+        if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    } catch(err) {
+        console.error(err.response?.data || err.message);
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// request.post(authOptions, function(error, response, body) {
+//   if (!error && response.statusCode === 200) {
+//     var token = body.access_token;
+//   }
+// });
+
+module.exports = router;
+

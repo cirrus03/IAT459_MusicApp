@@ -6,12 +6,12 @@ const express = require('express');
 const cors = require('cors'); // Import the CORS package
 const mongoose = require("mongoose"); //for database
 
-
 //routes
 const songRoutes = require("./routes/songs");
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
 const lyricsRoutes = require("./routes/lyrics");
+const spotifyRoutes = require("./routes/spotify");
 
 const app = express();
 const PORT = 5001;
@@ -68,6 +68,9 @@ app.use("/api/auth", authRoutes);
 
 //lyrics route
 app.use("/api/lyrics", lyricsRoutes);
+
+//spotify route
+app.use("/api/lyrics", spotifyRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

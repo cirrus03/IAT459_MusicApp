@@ -63,6 +63,21 @@ function Dashboard() {
     fetchLyrics();
   }, []);
 
+  //fetching spotify token test
+   useEffect(() => {
+    const fetchSpotifyToken = async () => {
+      try {
+        const res = await fetch("http://localhost:5001/api/spotify/auth");
+        const data = await res.json();
+        setLyrics(data);
+      } catch (err) {
+        console.error("Error fetching songs:", err);
+      }
+    };
+
+    fetchSpotifyToken();
+  }, []);
+
 
 
 
