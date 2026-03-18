@@ -67,11 +67,13 @@ function Dashboard() {
    useEffect(() => {
     const fetchSpotifyToken = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/spotify/auth");
+        const res = await fetch("http://localhost:5001/api/spotify/auth", {
+          method: "POST"
+        });
         const data = await res.json();
-        setLyrics(data);
+        console.log(data);
       } catch (err) {
-        console.error("Error fetching songs:", err);
+        console.error("Error fetching spotify token:", err);
       }
     };
 

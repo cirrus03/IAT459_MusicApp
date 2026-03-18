@@ -70,7 +70,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/lyrics", lyricsRoutes);
 
 //spotify route
-app.use("/api/lyrics", spotifyRoutes);
+app.use("/api/spotify", spotifyRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
