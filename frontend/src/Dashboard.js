@@ -56,7 +56,7 @@ function Dashboard() {
         const data = await res.json();
         setLyrics(data);
       } catch (err) {
-        console.error("Error fetching songs:", err);
+        console.error("Error fetching lyrics test:", err);
       }
     };
 
@@ -64,38 +64,38 @@ function Dashboard() {
   }, []);
 
   //fetching spotify token test
-   useEffect(() => {
-    const fetchSpotifyToken = async () => {
-      try {
-        const res = await fetch("http://localhost:5001/api/spotify/auth", {
-          method: "POST"
-        });
-        const data = await res.json();
-        console.log(data);
-      } catch (err) {
-        console.error("Error fetching spotify token:", err);
-      }
-    };
-
-    fetchSpotifyToken();
-  }, []);
-
-  //fetching spotify playlist test
   //  useEffect(() => {
-  //   const fetchSpotifyPlaylist = async () => {
+  //   const fetchSpotifyToken = async () => {
   //     try {
-  //       const res = await fetch("http://localhost:5001/api/spotify/playlist", {
-  //         method: "GET"
+  //       const res = await fetch("http://localhost:5001/api/spotify/auth", {
+  //         method: "POST"
   //       });
   //       const data = await res.json();
   //       console.log(data);
   //     } catch (err) {
-  //       console.error("Error fetching spotify plyalist:", err);
+  //       console.error("Error fetching spotify token:", err);
   //     }
   //   };
 
-  //   fetchSpotifyPlaylist();
+  //   fetchSpotifyToken();
   // }, []);
+
+  //fetching spotify playlist test
+   useEffect(() => {
+    const fetchSpotifyPlaylist = async () => {
+      try {
+        const res = await fetch("http://localhost:5001/api/spotify/playlist", {
+          method: "GET"
+        });
+        const data = await res.json();
+        console.log(data);
+      } catch (err) {
+        console.error("Error fetching spotify plyalist:", err);
+      }
+    };
+
+    fetchSpotifyPlaylist();
+  }, []);
 
 
 
