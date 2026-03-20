@@ -9,6 +9,7 @@ const router = express.Router();
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+const client_access_token = process.env.ACCESS_TOKEN_1HR;
 
 const authOptions = {
   url: 'https://accounts.spotify.com/api/token',
@@ -21,37 +22,6 @@ const authOptions = {
   json: true
 };
 
-
-// router.post("/auth", async (req, res, err) => {
-//     try {
-//         console.log("inside the try block");
-//         const response = await fetch(authOptions.url, {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': "application/json",
-//             'Authorization': "Basic" + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
-//           },
-//           body: new URLSearchParams( {
-//             grant_type: "client_credentials"
-//           })
-//         });
-
-//         const data = await response.json();
-//         res.json(data);
-//         console.log(data);
-
-//         if (!response.ok) {
-//         throw new Error(`HTTP error! status: ${response.status}`);
-
-//         res.json(data);
-//         console.log(data);
-//     }
-
-//     } catch (err) {
-//     console.error("ERROR:", err.message);
-//     res.status(400).json({ message: err.message });
-//   }
-// });
 
 router.post("/auth", async (req, res) => {
   try {
@@ -83,6 +53,29 @@ router.post("/auth", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+//playlist id: 37i9dQZEVXbMDoHDwVN2tF
+// router.get("/playlist", async (res, req) => {
+//   try {
+//     const reponse = await fetch("https://api.spotify.com/v1/playlists/)37i9dQZEVXbMDoHDwVN2tF", {
+//       method: "GET", 
+//       headers: {
+//         Authorization: "Bearer" + client_access_token
+//       }
+//     });
+
+//     const data = await response.json();
+//     console.log(data);
+
+//     if (!response.ok) {
+//       throw new Error(data.error_description || data.error);
+//     }
+
+//   } catch (err) {
+//     console.error("ERROR:", err.message);
+//     res.status(400).json({ message: err.message });
+//   }
+// });
 
 
 module.exports = router;

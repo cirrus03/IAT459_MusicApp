@@ -80,6 +80,23 @@ function Dashboard() {
     fetchSpotifyToken();
   }, []);
 
+  //fetching spotify playlist test
+  //  useEffect(() => {
+  //   const fetchSpotifyPlaylist = async () => {
+  //     try {
+  //       const res = await fetch("http://localhost:5001/api/spotify/playlist", {
+  //         method: "GET"
+  //       });
+  //       const data = await res.json();
+  //       console.log(data);
+  //     } catch (err) {
+  //       console.error("Error fetching spotify plyalist:", err);
+  //     }
+  //   };
+
+  //   fetchSpotifyPlaylist();
+  // }, []);
+
 
 
 
