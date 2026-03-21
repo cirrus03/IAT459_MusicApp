@@ -82,17 +82,28 @@ router.get("/playlist", async (req, res) => {
     }
 
     //send playlist (not tracks) to frontend
-    // res.json(playlistResponse);
+    res.json(playlistData);
 
     //get the tracks from playlist 
-    const tracks = playlistData.items.items.map((song) => ({
-      name: song.item.name,
+    // const tracks = playlistData.items.items.map((song) => ({
+    //   name: song.item.name,
       // artist: song.items.artists.map(a => a.name).join(", "),
       // album: song.items.album.name,
-    }));
+    // }));
+
+  //   const tracks = playlistData.tracks.items
+  // .filter(item => item.track)
+  // .map(item => ({
+  //   name: item.track.name,
+  //   artist: item.track.artists.map(a => a.name).join(", "),
+  //   album: item.track.album.name,
+  //   releaseYear: item.track.album.release_date?.slice(0, 4),
+  //   image: item.track.album.images[0]?.url,
+  //   preview: item.track.preview_url
+  // }));
 
     //send list of songs to frontend
-    res.json(tracks);
+    // res.json(tracks);
 
 
   } catch (err) {
