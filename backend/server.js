@@ -12,6 +12,9 @@ const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
 const lyricsRoutes = require("./routes/lyrics");
 const spotifyRoutes = require("./routes/spotify");
+const youtubeRoutes = require("./routes/youtube");
+const soundchartRoutes = require("./routes/soundchart");
+
 
 const app = express();
 const PORT = 5001;
@@ -71,6 +74,12 @@ app.use("/api/lyrics", lyricsRoutes);
 
 //spotify route
 app.use("/api/spotify", spotifyRoutes);
+
+//youtube route
+app.use("/api/youtube", youtubeRoutes);
+
+//soundchart route
+app.use("/api/soundchart", soundchartRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
