@@ -15,6 +15,9 @@ function Dashboard() {
   // store the list of users for the admin view
   const [users, setUsers] = useState([]);
 
+  // selected song for detail view
+  const [selectedSong, setSelectedSong] = useState(null);
+
   // store the form inputs.
   // we use a single object to hold all fields instead of creating 6 separate state variables.
   const [formData, setFormData] = useState({
@@ -35,10 +38,9 @@ function Dashboard() {
     releaseYear: [],
   });
 
-
   //state for holding testing lyrics
   const [lyrics, setLyrics] = useState({
-    lyrics: ""
+    lyrics: "",
   });
 
   // tap into our AuthContext
@@ -48,8 +50,8 @@ function Dashboard() {
 
   ////// USE EFFECT rendering ///////////////////
 
-//fetching lyric test
-   useEffect(() => {
+  //fetching lyric test
+  useEffect(() => {
     const fetchLyrics = async () => {
       try {
         const res = await fetch("http://localhost:5001/api/lyrics");
@@ -81,8 +83,7 @@ function Dashboard() {
   //   fetchSpotifyPlaylist();
   // }, []);
 
-
-   //fetch youtube top 50 playlist
+  //fetch youtube top 50 playlist
   //  useEffect(() => {
   //   const fetchYTPlaylist = async () => {
   //     try {
@@ -99,12 +100,11 @@ function Dashboard() {
   //   fetchYTPlaylist();
   // }, []);
 
-
   useEffect(() => {
     const fetchSounchartChart = async () => {
       try {
         const res = await fetch("http://localhost:5001/api/soundchart/chart", {
-          method: "GET"
+          method: "GET",
         });
         const data = await res.json();
         console.log(data);
@@ -116,11 +116,7 @@ function Dashboard() {
     fetchSounchartChart();
   }, []);
 
-
-
-
-
-//fetching song list
+  //fetching song list
   useEffect(() => {
     const fetchSongs = async () => {
       try {
@@ -151,32 +147,32 @@ function Dashboard() {
     // console.log(user.username);
   }, [user]);
 
- // fetch the member list only if the logged-in user is an admin
-useEffect(() => {
-  if (user?.role === "admin") {
-    fetch("http://localhost:5001/api/admin/users", {
-      headers: {
-        Authorization: token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Admin users response:", data);
-
-        // only save the data if it is actually an array
-        if (Array.isArray(data)) {
-          setUsers(data);
-        } else {
-          console.error("Expected an array of users but got:", data);
-          setUsers([]);
-        }
+  // fetch the member list only if the logged-in user is an admin
+  useEffect(() => {
+    if (user?.role === "admin") {
+      fetch("http://localhost:5001/api/admin/users", {
+        headers: {
+          Authorization: token,
+        },
       })
-      .catch((err) => {
-        console.error("Error fetching users:", err);
-        setUsers([]);
-      });
-  }
-}, [user, token]);
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Admin users response:", data);
+
+          // only save the data if it is actually an array
+          if (Array.isArray(data)) {
+            setUsers(data);
+          } else {
+            console.error("Expected an array of users but got:", data);
+            setUsers([]);
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching users:", err);
+          setUsers([]);
+        });
+    }
+  }, [user, token]);
 
   /////// HANDLERS //////////
 
@@ -243,6 +239,11 @@ useEffect(() => {
 
       // update Frontend: Keep all songs EXCEPT the one we just deleted
       setSongs(songs.filter((song) => song._id !== id));
+
+      // if deleting selected song --> go back to song grid
+      if (selectedSong?._id === id) {
+        setSelectedSong(null);
+      }
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -292,27 +293,26 @@ useEffect(() => {
   });
 
   // delete a user (admin only)
-const handleDeleteUser = async (id) => {
-  try {
-    const res = await fetch(`http://localhost:5001/api/admin/users/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: token,
-      },
-    });
+  const handleDeleteUser = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5001/api/admin/users/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: token,
+        },
+      });
 
-    if (!res.ok) {
-      throw new Error("Failed to delete user");
+      if (!res.ok) {
+        throw new Error("Failed to delete user");
+      }
+
+      // update frontend state
+      setUsers(users.filter((user) => user._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Could not delete user");
     }
-
-    // update frontend state
-    setUsers(users.filter((user) => user._id !== id));
-
-  } catch (err) {
-    console.error(err);
-    alert("Could not delete user");
-  }
-};
+  };
 
   //UI
   return (
@@ -335,7 +335,9 @@ const handleDeleteUser = async (id) => {
           {user?.role === "admin" && (
             <div className="admin-panel-preview">
               <h4>Admin Access Enabled</h4>
-              <p>You have admin permissions. You can view the member list below.</p>
+              <p>
+                You have admin permissions. You can view the member list below.
+              </p>
 
               <div className="admin-users-list">
                 <h5>Member List</h5>
@@ -345,8 +347,12 @@ const handleDeleteUser = async (id) => {
                 ) : (
                   users.map((member) => (
                     <div key={member._id} className="admin-user-card">
-                      <p><strong>Username:</strong> {member.username}</p>
-                      <p><strong>Role:</strong> {member.role}</p>
+                      <p>
+                        <strong>Username:</strong> {member.username}
+                      </p>
+                      <p>
+                        <strong>Role:</strong> {member.role}
+                      </p>
 
                       <button
                         className="admin-delete-btn"
@@ -360,16 +366,12 @@ const handleDeleteUser = async (id) => {
               </div>
             </div>
           )}
-
         </div>
-
-        
 
         <button className="logout-btn" onClick={logout}>
           Logout
         </button>
         <Link to="/general">View general page</Link>
-
       </div>
       {/* small backend status card */}
       {/* <div className="status-card">
@@ -382,15 +384,12 @@ const handleDeleteUser = async (id) => {
           Add tracks, organize details, and browse your collection in one place.
         </p>
       </header>
-
       <div className="lyric-testing">
-          <p>
-            {lyrics.lyrics}
-          </p>
-          <p>there should eb lyrics above me</p>
-        </div>
-
+        <p>{lyrics.lyrics}</p>
+        <p>there should eb lyrics above me</p>
+      </div>
       <div className="content-wrapper">
+        {/* /////////// LEFT PANEL /////////// */}
         {/* left panel: data entry form*/}
         <div className="left-panel">
           <div className="card form-card">
@@ -467,174 +466,246 @@ const handleDeleteUser = async (id) => {
           </div>
         </div>
 
-        {/* right panel: the grid of songs */}
+        {/* /////////// RIGHT PANEL /////////// */}
+        {/* right panel: the grid of songs & changes to detailed view on click */}
         <div className="right-panel">
-          {/* search and filter */}
-          <div className="filters">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Search by title, artist, or album"
-              className="search-bar"
-            />
+          {selectedSong ? (
+            /////////// DETAIL VIEW ///////////
+            <div className="card song-detail-card">
+              <h2>Song Details</h2>
 
-            <div className="filter-group">
-              <h4>Genre</h4>
+              {selectedSong.imgUrl ? (
+                <img src={selectedSong.imgUrl} alt={selectedSong.title} />
+              ) : (
+                <div className="placeholder">No Cover</div>
+              )}
 
-              <label>
-                <input
-                  type="checkbox"
-                  name="genre"
-                  value="Pop"
-                  onChange={handleFilterChange}
-                />
-                Pop
-              </label>
+              <table className="song-detail-table">
+                <tbody>
+                  <tr>
+                    <th>Title</th>
+                    <td>{selectedSong.title || "N/A"}</td>
+                  </tr>
+                  <tr>
+                    <th>Artist</th>
+                    <td>{selectedSong.artist || "N/A"}</td>
+                  </tr>
+                  <tr>
+                    <th>Album</th>
+                    <td>{selectedSong.album || "N/A"}</td>
+                  </tr>
+                  <tr>
+                    <th>Release</th>
+                    <td>{selectedSong.releaseDate || "N/A"}</td>
+                  </tr>
+                  <tr>
+                    <th>Language</th>
+                    <td>{selectedSong.language || "N/A"}</td>
+                  </tr>
+                  <tr>
+                    <th>Genre</th>
+                    <td>{selectedSong.genre || "N/A"}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-              <label>
-                <input
-                  type="checkbox"
-                  name="genre"
-                  value="Rock"
-                  onChange={handleFilterChange}
-                />
-                Rock
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="genre"
-                  value="Hip-Hop"
-                  onChange={handleFilterChange}
-                />
-                Hip-Hop
-              </label>
-
-              {/* add whatever other genres here */}
-            </div>
-
-            <div className="filter-group">
-              <h4>Language</h4>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="language"
-                  value="English"
-                  onChange={handleFilterChange}
-                />
-                English
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="language"
-                  value="Spanish"
-                  onChange={handleFilterChange}
-                />
-                French
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="language"
-                  value="Spanish"
-                  onChange={handleFilterChange}
-                />
-                Spanish
-              </label>
-
-              {/* add whatever other languages here */}
-            </div>
-
-            <div className="filter-group">
-              <h4>Release Year</h4>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="releaseYear"
-                  value="2024"
-                  onChange={handleFilterChange}
-                />
-                2024
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="releaseYear"
-                  value="2023"
-                  onChange={handleFilterChange}
-                />
-                2023
-              </label>
-            </div>
-
-            {/* add whatever other years here */}
-          </div>
-
-          <div className="section-heading">
-            <h3>Your Collection</h3>
-            <p>{songs.length} song(s)</p>
-          </div>
-
-          <div className="song-grid">
-            {/* .map() loops through the 'songs' array.
-            For every song item, it creates a <div> (song-card).
-            */}
-            {filteredSongs.map((song) => (
-              <div key={song._id} className="song-card">
-                {/* the 'key' prop is required by React for performance.
-                It helps React track which items changed, added, or removed.
-                */}
-                <div className="image-container">
-                  {/* conditional rendering:
-                  IF song.imgUrl exists, show the Image.
-                  ELSE (:), show the "No Image" placeholder.
-                  */}
-                  {song.imgUrl ? (
-                    <img src={song.imgUrl} alt={song.title} />
-                  ) : (
-                    <div className="placeholder">No Cover</div>
-                  )}
-                </div>
-
-                <div className="card-details">
-                  <h3>{song.title}</h3>
-                  <p>
-                    <strong>Title:</strong> {song.title}
-                  </p>
-                  <p>
-                    <strong>Artist:</strong> {song.artist}
-                  </p>
-                  <p>
-                    <strong>Album:</strong> {song.album}
-                  </p>
-                  <p>
-                    <strong>Date:</strong> {song.releaseDate}
-                  </p>
-
-                  {/* we use an arrow function here () => handleDelete(...)
-                  so the function only runs when CLICKED, not when the page
-                  loads. */}
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(song._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
+              <div className="lyrics-section">
+                <h3>Lyrics</h3>
+                {selectedSong.lyrics ? (
+                  <p className="lyrics-text">{selectedSong.lyrics}</p>
+                ) : (
+                  <p className="no-lyrics">No lyrics available</p>
+                )}
               </div>
-            ))}
-          </div>
+
+              <div className="detail-actions">
+                <button
+                  className="secondary-btn-delete"
+                  onClick={() => handleDelete(selectedSong._id)}
+                >
+                  Delete Song
+                </button>
+                <button
+                  className="secondary-btn"
+                  onClick={() => setSelectedSong(null)}
+                >
+                  ⬅ Back to Home
+                </button>
+              </div>
+            </div>
+          ) : (
+            // /////////// SONG GRID + SEARCH & FILTER ///////////
+            <>
+              <div className="filters">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="Search by title, artist, or album"
+                  className="search-bar"
+                />
+
+                <div className="filter-group">
+                  <h4>Genre</h4>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="genre"
+                      value="Pop"
+                      onChange={handleFilterChange}
+                    />
+                    Pop
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="genre"
+                      value="Rock"
+                      onChange={handleFilterChange}
+                    />
+                    Rock
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="genre"
+                      value="Hip-Hop"
+                      onChange={handleFilterChange}
+                    />
+                    Hip-Hop
+                  </label>
+
+                  {/* add whatever other genres here */}
+                </div>
+
+                <div className="filter-group">
+                  <h4>Language</h4>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="language"
+                      value="English"
+                      onChange={handleFilterChange}
+                    />
+                    English
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="language"
+                      value="Spanish"
+                      onChange={handleFilterChange}
+                    />
+                    French
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="language"
+                      value="Spanish"
+                      onChange={handleFilterChange}
+                    />
+                    Spanish
+                  </label>
+
+                  {/* add whatever other languages here */}
+                </div>
+
+                <div className="filter-group">
+                  <h4>Release Year</h4>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="releaseYear"
+                      value="2024"
+                      onChange={handleFilterChange}
+                    />
+                    2024
+                  </label>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="releaseYear"
+                      value="2023"
+                      onChange={handleFilterChange}
+                    />
+                    2023
+                  </label>
+                </div>
+
+                {/* add whatever other years here */}
+              </div>
+
+              <div className="section-heading">
+                <h3>Your Collection</h3>
+                <p>{songs.length} song(s)</p>
+              </div>
+
+              <div className="song-grid">
+                {/* .map() loops through the 'songs' array.
+                For every song item, it creates a <div> (song-card).
+                */}
+                {filteredSongs.map((song) => (
+                  <div
+                    key={song._id}
+                    className="song-card"
+                    // the 'key' prop is required by React for performance.
+                    // It helps React track which items changed, added, or removed
+                    onClick={() => setSelectedSong(song)}
+                  >
+                    <div className="image-container">
+                      {/* conditional rendering:
+                      IF song.imgUrl exists, show the Image.
+                      ELSE (:), show the "No Image" placeholder.
+                      */}
+                      {song.imgUrl ? (
+                        <img src={song.imgUrl} alt={song.title} />
+                      ) : (
+                        <div className="placeholder">No Cover</div>
+                      )}
+                    </div>
+
+                    <div className="card-details">
+                      <h3>{song.title}</h3>
+                      <p>
+                        <strong>Artist:</strong> {song.artist}
+                      </p>
+                      <p>
+                        <strong>Album:</strong> {song.album}
+                      </p>
+                      <p>
+                        <strong>Date:</strong> {song.releaseDate}
+                      </p>
+
+                      {/* we use an arrow function here () => handleDelete(...)
+                      so the function only runs when CLICKED, not when the page
+                      loads. */}
+
+                      <button
+                        className="delete-btn"
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevents opening detail view when clicking delete
+                          handleDelete(song._id);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
-      </div>{" "}
-      {/* End content-wrapper */}
+      </div>
     </div>
   );
 }
