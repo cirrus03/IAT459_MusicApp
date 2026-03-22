@@ -54,7 +54,8 @@ function Dashboard() {
       try {
         const res = await fetch("http://localhost:5001/api/lyrics");
         const data = await res.json();
-        setLyrics(data);
+        console.log(data);
+        // setLyrics(data);
       } catch (err) {
         console.error("Error fetching lyrics test:", err);
       }
@@ -62,23 +63,6 @@ function Dashboard() {
 
     fetchLyrics();
   }, []);
-
-  //fetching spotify token test
-  //  useEffect(() => {
-  //   const fetchSpotifyToken = async () => {
-  //     try {
-  //       const res = await fetch("http://localhost:5001/api/spotify/auth", {
-  //         method: "POST"
-  //       });
-  //       const data = await res.json();
-  //       console.log(data);
-  //     } catch (err) {
-  //       console.error("Error fetching spotify token:", err);
-  //     }
-  //   };
-
-  //   fetchSpotifyToken();
-  // }, []);
 
   //fetching spotify playlist test
   //  useEffect(() => {
