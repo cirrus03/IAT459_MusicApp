@@ -8,6 +8,9 @@ function Dashboard() {
   /////////// STATES ////////////////
   const [message, setMessage] = useState("");
 
+  // store favorited song IDs for quick lookup
+const [favorites, setFavorites] = useState([]);
+
   // store the list of songs fetched from the database.
   // initial value is an empty array [] because we haven't fetched data yet.
   const [songs, setSongs] = useState([]);
@@ -65,6 +68,25 @@ function Dashboard() {
 
     fetchLyrics();
   }, []);
+
+  // fetch user's favorites
+useEffect(() => {
+  if (token) {
+    fetch("http://localhost:5001/api/profile", {
+      headers: {
+        Authorization: token,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.favorites) {
+          // store only IDs for easy checking
+          setFavorites(data.favorites.map((song) => song._id));
+        }
+      })
+      .catch((err) => console.error("Error fetching favorites:", err));
+  }
+}, [token]);
 
   //fetching spotify playlist test
   //  useEffect(() => {
@@ -184,6 +206,35 @@ function Dashboard() {
       [e.target.name]: e.target.value, // overwrite only the field currently being typed in
     });
   };
+
+  // toggle favorite / unfavorite
+const handleToggleFavorite = async (songId) => {
+  try {
+    const isFavorited = favorites.includes(songId);
+
+    const url = `http://localhost:5001/api/profile/favorite/${songId}`;
+    const method = isFavorited ? "DELETE" : "POST";
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    if (!res.ok) throw new Error("Failed to update favorite");
+
+    // update UI instantly
+    if (isFavorited) {
+      setFavorites(favorites.filter((id) => id !== songId));
+    } else {
+      setFavorites([...favorites, songId]);
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   // handles the "Add Song" button click.
   const handleSubmit = async (e) => {
@@ -368,10 +419,17 @@ function Dashboard() {
           )}
         </div>
 
+       <div className="profile-top-actions">
+        <Link to="/profile" className="profile-link-btn">
+          Profile
+        </Link>
+        <Link to="/" className="profile-link-btn">
+          Home
+        </Link>
         <button className="logout-btn" onClick={logout}>
           Logout
         </button>
-        <Link to="/general">View general page</Link>
+      </div>
       </div>
       {/* small backend status card */}
       {/* <div className="status-card">
@@ -688,6 +746,16 @@ function Dashboard() {
                       {/* we use an arrow function here () => handleDelete(...)
                       so the function only runs when CLICKED, not when the page
                       loads. */}
+
+                      <button
+                        className="favorite-btn"
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevents opening detail view
+                          handleToggleFavorite(song._id);
+                        }}
+                      >
+                        {favorites.includes(song._id) ? "★ Favorited" : "☆ Favorite"}
+                      </button>
 
                       <button
                         className="delete-btn"

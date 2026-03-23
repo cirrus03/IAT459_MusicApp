@@ -14,6 +14,7 @@ const lyricsRoutes = require("./routes/lyrics");
 const spotifyRoutes = require("./routes/spotify");
 const youtubeRoutes = require("./routes/youtube");
 const soundchartRoutes = require("./routes/soundchart");
+const profileRoutes = require("./routes/profile");
 
 
 const app = express();
@@ -80,6 +81,9 @@ app.use("/api/youtube", youtubeRoutes);
 
 //soundchart route
 app.use("/api/soundchart", soundchartRoutes);
+
+//profile route
+app.use("/api/profile", profileRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

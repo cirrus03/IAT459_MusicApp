@@ -20,6 +20,15 @@ const userSchema = new mongoose.Schema({
     enum: ["member", "admin"],
     default: "member",
   },
+
+  // store the user's favorited songs
+  // each entry references a Song document by its MongoDB ObjectId
+  favorites: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Song",
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);
