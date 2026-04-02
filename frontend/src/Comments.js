@@ -5,29 +5,67 @@ import { AuthContext } from "./context/AuthContext"; // import the global "cloud
 
 function Comments() {
 
-    //state for holding all comments from a song
-    const [comments, setComments] = useState([]);
+  ////////// STATES ///////////////
 
-    //state for the comment response being typed
-    const [formData, setFormData] = useState({
-        textBody: ""
-      });
+  //state for holding all comments from a song
+  const [comments, setComments] = useState([]);
 
-    const [users, setUsers] = useState([]);
+  //state for the comment response being typed
+  const [formData, setFormData] = useState({
+      textBody: ""
+  });
 
-    //auth context for user verification
-    const { token, user} = useContext(AuthContext);
+  const [users, setUsers] = useState([]);
 
-    useEffect(()=>
-        {
-
-        }, []);
+  //auth context for user verification
+  const { token, user} = useContext(AuthContext);
 
 
-    return(
-        <div>
-            <p>I am the comment component</p>
-        </div>
+  //////////// USE EFFECT /////////////////
+  
+  //fetch comments based on song id
+  useEffect(()=> {  
+
+  }, []);
+  
+
+
+  ////////// FUNCTIONS /////////////////////
+  //handle on change
+
+  //handle submit
+
+  //delete a comment (if you are the user or admin)
+
+  //edit commment?
+
+  return(
+    <div>
+      <p>I am the comment component</p>
+
+      <div className="form-container">
+
+        <form onSubmit={handleCommentSubmit}>
+          <label>Comment</label>
+          <input
+            name='textBody'
+            value={formData.textBody}
+            onChange={handleCommentChange}
+            placeholder="Enter your comment here"
+            required
+          />
+          <button
+                className="primary-btn"
+                type="submit"
+                onClick={handleSubmit}
+              >
+                Add Song
+              </button>
+        </form>
+
+      </div>
+
+    </div>
         
     );
 }

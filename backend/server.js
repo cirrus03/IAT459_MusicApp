@@ -15,7 +15,7 @@ const spotifyRoutes = require("./routes/spotify");
 const youtubeRoutes = require("./routes/youtube");
 const soundchartRoutes = require("./routes/soundchart");
 const profileRoutes = require("./routes/profile");
-const commentRoutes = required("./routes/comments");
+const commentRoutes = require("./routes/comments");
 
 
 const app = express();

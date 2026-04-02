@@ -122,21 +122,21 @@ useEffect(() => {
   //   fetchYTPlaylist();
   // }, []);
 
-  useEffect(() => {
-    const fetchSounchartChart = async () => {
-      try {
-        const res = await fetch("http://localhost:5001/api/soundchart/chart", {
-          method: "GET",
-        });
-        const data = await res.json();
-        console.log(data);
-      } catch (err) {
-        console.error("Error fetching soundchart chart:", err);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchSounchartChart = async () => {
+  //     try {
+  //       const res = await fetch("http://localhost:5001/api/soundchart/chart", {
+  //         method: "GET",
+  //       });
+  //       const data = await res.json();
+  //       console.log(data);
+  //     } catch (err) {
+  //       console.error("Error fetching soundchart chart:", err);
+  //     }
+  //   };
 
-    fetchSounchartChart();
-  }, []);
+  //   fetchSounchartChart();
+  // }, []);
 
   //fetching song list
   useEffect(() => {
