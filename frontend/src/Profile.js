@@ -4,19 +4,16 @@ import "./App.css";
 import { AuthContext } from "./context/AuthContext";
 
 function Profile() {
-  // get current logged-in user and token from AuthContext
   const { token, logout } = useContext(AuthContext);
 
-  // store full profile data from backend
   const [profile, setProfile] = useState(null);
-
-  // loading state for cleaner rendering
   const [loading, setLoading] = useState(true);
-
-  // selected song for detail view
   const [selectedSong, setSelectedSong] = useState(null);
+  const [selectedSection, setSelectedSection] = useState("favorites");
+  const [newUsername, setNewUsername] = useState("");
+  const [usernameMessage, setUsernameMessage] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
-  // fetch the logged-in user's profile and favorites
   useEffect(() => {
     if (token) {
       fetch("http://localhost:5001/api/profile", {
@@ -26,7 +23,6 @@ function Profile() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("PROFILE RESPONSE:", data);
           setProfile(data);
           setLoading(false);
         })
@@ -39,7 +35,6 @@ function Profile() {
     }
   }, [token]);
 
-  // remove a song from favorites
   const handleUnfavorite = async (songId) => {
     try {
       const res = await fetch(
@@ -56,13 +51,11 @@ function Profile() {
         throw new Error("Failed to remove favorite");
       }
 
-      // update profile state immediately so UI refreshes without reloading
       setProfile((prevProfile) => ({
         ...prevProfile,
         favorites: prevProfile.favorites.filter((song) => song._id !== songId),
       }));
 
-      // if the removed song is currently selected, return to grid view
       if (selectedSong?._id === songId) {
         setSelectedSong(null);
       }
@@ -71,15 +64,49 @@ function Profile() {
     }
   };
 
+  const handleUpdateUsername = async () => {
+    try {
+      setUsernameMessage("");
+
+      const res = await fetch("http://localhost:5001/api/profile/username", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({ username: newUsername }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setUsernameMessage(data.error || "Could not update username");
+        return;
+      }
+
+      setProfile(data);
+      setNewUsername("");
+      setIsEditing(false);
+      setUsernameMessage("Username updated successfully.");
+    } catch (err) {
+      console.error("Error updating username:", err);
+      setUsernameMessage("Something went wrong.");
+    }
+  };
+
+  const activeSongs =
+    selectedSection === "favorites"
+      ? profile?.favorites || []
+      : profile?.songs || [];
+
   return (
     <div className="page-container">
-      {/* top bar */}
       <div className="dashboard-topbar">
         <div className="dashboard-user">
           <p className="dashboard-eyebrow">Music Map</p>
           <h2 className="dashboard-greeting">Your Profile</h2>
           <p className="dashboard-subtext">
-            View your account details and your favorited songs.
+            View your account details, your songs, and your favorites.
           </p>
         </div>
 
@@ -93,7 +120,6 @@ function Profile() {
         </div>
       </div>
 
-      {/* profile info */}
       <div className="card profile-card">
         <h3>Personal Info</h3>
 
@@ -103,41 +129,119 @@ function Profile() {
           <p className="profile-empty">{profile.error}</p>
         ) : profile ? (
           <div className="profile-info">
-            <p>
-              <strong>Username:</strong> {profile.username}
-            </p>
+            <div className="profile-info-row">
+              <strong>Username:</strong>
+
+              {!isEditing ? (
+                <span className="username-inline">
+                  {profile.username}
+                  <button
+                    className="edit-btn"
+                    onClick={() => {
+                      setNewUsername(profile.username);
+                      setUsernameMessage("");
+                      setIsEditing(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+                </span>
+              ) : (
+                <span className="username-editing">
+                  <input
+                    type="text"
+                    value={newUsername}
+                    onChange={(e) => setNewUsername(e.target.value)}
+                  />
+
+                  <button className="save-btn" onClick={handleUpdateUsername}>
+                    Save
+                  </button>
+
+                  <button
+                    className="cancel-btn"
+                    onClick={() => {
+                      setIsEditing(false);
+                      setNewUsername("");
+                      setUsernameMessage("");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </span>
+              )}
+            </div>
+
             <p>
               <strong>Role:</strong> {profile.role}
             </p>
+
+            {usernameMessage && (
+              <p className="profile-message">{usernameMessage}</p>
+            )}
           </div>
         ) : (
           <p className="profile-empty">No profile data found.</p>
         )}
       </div>
 
-      {/* favorites section */}
+      <div className="profile-tabs">
+        <button
+          className={
+            selectedSection === "favorites"
+              ? "profile-tab active-tab"
+              : "profile-tab"
+          }
+          onClick={() => {
+            setSelectedSection("favorites");
+            setSelectedSong(null);
+          }}
+        >
+          Favorites
+        </button>
+
+        <button
+          className={
+            selectedSection === "songs"
+              ? "profile-tab active-tab"
+              : "profile-tab"
+          }
+          onClick={() => {
+            setSelectedSection("songs");
+            setSelectedSong(null);
+          }}
+        >
+          Your Songs
+        </button>
+      </div>
+
       <div className="profile-favorites-section">
         <div className="section-heading">
-          <h3>Favorited Songs</h3>
-          <p>{profile?.favorites?.length || 0} song(s)</p>
+          <h3>
+            {selectedSection === "favorites"
+              ? "Favorited Songs"
+              : "Your Submitted Songs"}
+          </h3>
+          <p>{activeSongs.length} song(s)</p>
         </div>
 
         {loading ? (
           <div className="card">
-            <p className="profile-empty">Loading favorites...</p>
+            <p className="profile-empty">Loading songs...</p>
           </div>
         ) : profile?.error ? (
           <div className="card">
             <p className="profile-empty">{profile.error}</p>
           </div>
-        ) : !profile?.favorites || profile.favorites.length === 0 ? (
+        ) : activeSongs.length === 0 ? (
           <div className="card">
             <p className="profile-empty">
-              You haven’t favorited any songs yet.
+              {selectedSection === "favorites"
+                ? "You haven’t favorited any songs yet."
+                : "You haven’t added any songs yet."}
             </p>
           </div>
         ) : selectedSong ? (
-          // detail view
           <div className="card song-detail-card">
             <h2>Song Details</h2>
 
@@ -186,24 +290,26 @@ function Profile() {
             </div>
 
             <div className="detail-actions">
-              <button
-                className="secondary-btn-delete"
-                onClick={() => handleUnfavorite(selectedSong._id)}
-              >
-                Remove from Favorites
-              </button>
+              {selectedSection === "favorites" && (
+                <button
+                  className="secondary-btn-delete"
+                  onClick={() => handleUnfavorite(selectedSong._id)}
+                >
+                  Remove from Favorites
+                </button>
+              )}
+
               <button
                 className="secondary-btn"
                 onClick={() => setSelectedSong(null)}
               >
-                ⬅ Back to Favorites
+                ⬅ Back
               </button>
             </div>
           </div>
         ) : (
-          // favorites grid
           <div className="song-grid">
-            {profile.favorites.map((song) => (
+            {activeSongs.map((song) => (
               <div
                 key={song._id}
                 className="song-card"
@@ -232,15 +338,17 @@ function Profile() {
                     <strong>Genre:</strong> {song.genre || "N/A"}
                   </p>
 
-                  <button
-                    className="unfavorite-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleUnfavorite(song._id);
-                    }}
-                  >
-                    Remove from Favorites
-                  </button>
+                  {selectedSection === "favorites" && (
+                    <button
+                      className="unfavorite-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUnfavorite(song._id);
+                      }}
+                    >
+                      Remove from Favorites
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
