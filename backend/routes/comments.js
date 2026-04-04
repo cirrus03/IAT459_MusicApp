@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Comment = require("../models/Comment");
-const verifyToken = require("../middleware/auth"); //import middleware to add auth headers to our routes
+const auth = require("../middleware/auth"); //import middleware to add auth headers to our routes
 
 
 //GET ROUTE retrieve all commments
@@ -17,12 +17,13 @@ router.get("/:songId", async (req, res) => {
 
 
 // POST ROUTE create a comment
-router.post("/", async (req, res) => { //temp remove verifytoken for testing
+router.post("/", auth, async (req, res) => { 
     const comment = new Comment({
-        // author: req.userId,
+        author: req.user.id,
         // song: req.songId,
         body: req.body.textBody, 
     });
+
 
     try {
         const newComment = await comment.save();

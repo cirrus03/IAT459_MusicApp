@@ -15,8 +15,6 @@ function Comments() {
       textBody: ""
   });
 
-  const [users, setUsers] = useState([]);
-
   //auth context for user verification
   const { token, user} = useContext(AuthContext);
 
@@ -50,7 +48,7 @@ function Comments() {
           method: "POST" ,
           headers: {
             "Content-Type": "application/json",
-            // Authorization: token, //attach token to prove user auth when posting a comment
+            Authorization: token, //attach token to prove user auth when posting a comment
           },
           body: JSON.stringify(formData),
         }

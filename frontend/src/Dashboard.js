@@ -760,7 +760,7 @@ const handleToggleFavorite = async (songId) => {
                           handleToggleFavorite(song._id);
                         }}
                       >
-                        {favorites.includes(song._id) ? "★ Favorited" : "☆ Favorite"}
+                        {favorites.includes(song._id) ? "★ Favourited" : "☆ Favourite"}
                       </button>
 
                       <button
