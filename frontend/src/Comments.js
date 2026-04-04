@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./Dashboard.js";
 import { AuthContext } from "./context/AuthContext"; // import the global "cloud" to access our token and user
 
-function Comments() {
+function Comments(songId) {
 
   ////////// STATES ///////////////
 
@@ -23,7 +23,7 @@ function Comments() {
   
   //fetch comments based on song id
   useEffect(()=> {  
-
+    console.log(songId);
   }, []);
   
 
@@ -50,7 +50,10 @@ function Comments() {
             "Content-Type": "application/json",
             Authorization: token, //attach token to prove user auth when posting a comment
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            textBody: formData.textBody,
+            songId: songId.songId,
+          })
         }
       );
 

@@ -7,11 +7,11 @@ const CommentSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
-    // song: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Song",
-    //     required: true,
-    // },
+    song: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Song",
+        required: true,
+    },
     body: {
         type: String,
         required: true,

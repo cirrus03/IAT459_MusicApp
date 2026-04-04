@@ -20,9 +20,15 @@ router.get("/:songId", async (req, res) => {
 router.post("/", auth, async (req, res) => { 
     const comment = new Comment({
         author: req.user.id,
-        // song: req.songId,
+        song: req.body.songId,
         body: req.body.textBody, 
     });
+
+    console.log("comment object to be posted");
+    console.log(comment);
+
+    console.log("req.body:", req.body);
+    console.log("typeof songId:", typeof req.body.songId);
 
 
     try {
@@ -30,6 +36,7 @@ router.post("/", auth, async (req, res) => {
         res.status(201).json(newComment);
     } catch (err) {
         res.status(400).json({ message: err.message });
+        console.log(err.message);
     }
 });
 

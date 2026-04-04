@@ -534,77 +534,13 @@ const handleToggleFavorite = async (songId) => {
           
           {selectedSong ? (
             /////////// DETAIL VIEW ///////////
-            // <SongDetails 
-            //   deleteSong={handleDelete}
-            //   song={selectedSong}
-            //   />
-              <SongDetails 
+          
+              <SongDetails  //refactored
                 deleteSong={handleDelete}
                 song={selectedSong}
                 onBack={() => setSelectedSong(null)}
-/>
-            // <div className="card song-detail-card">
-            //   <h2>Song Details</h2>
+              />
 
-            //   {selectedSong.imgUrl ? (
-            //     <img src={selectedSong.imgUrl} alt={selectedSong.title} />
-            //   ) : (
-            //     <div className="placeholder">No Cover</div>
-            //   )}
-
-            //   <table className="song-detail-table">
-            //     <tbody>
-            //       <tr>
-            //         <th>Title</th>
-            //         <td>{selectedSong.title || "N/A"}</td>
-            //       </tr>
-            //       <tr>
-            //         <th>Artist</th>
-            //         <td>{selectedSong.artist || "N/A"}</td>
-            //       </tr>
-            //       <tr>
-            //         <th>Album</th>
-            //         <td>{selectedSong.album || "N/A"}</td>
-            //       </tr>
-            //       <tr>
-            //         <th>Release</th>
-            //         <td>{selectedSong.releaseDate || "N/A"}</td>
-            //       </tr>
-            //       <tr>
-            //         <th>Language</th>
-            //         <td>{selectedSong.language || "N/A"}</td>
-            //       </tr>
-            //       <tr>
-            //         <th>Genre</th>
-            //         <td>{selectedSong.genre || "N/A"}</td>
-            //       </tr>
-            //     </tbody>
-            //   </table>
-
-            //   <div className="lyrics-section">
-            //     <h3>Lyrics</h3>
-            //     {selectedSong.lyrics ? (
-            //       <p className="lyrics-text">{selectedSong.lyrics}</p>
-            //     ) : (
-            //       <p className="no-lyrics">No lyrics available</p>
-            //     )}
-            //   </div>
-
-            //   <div className="detail-actions">
-            //     <button
-            //       className="secondary-btn-delete"
-            //       onClick={() => handleDelete(selectedSong._id)}
-            //     >
-            //       Delete Song
-            //     </button>
-            //     <button
-            //       className="secondary-btn"
-            //       onClick={() => setSelectedSong(null)}
-            //     >
-            //       ⬅ Back to Home
-            //     </button>
-            //   </div>
-            // </div>
           ) : (
             // /////////// SONG GRID + SEARCH & FILTER ///////////
             <>
