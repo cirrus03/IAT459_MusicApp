@@ -446,8 +446,6 @@ const handleToggleFavorite = async (songId) => {
         </p>
       </header>
 
-      <Comments />
-
       <div className="lyric-testing">
         <p>{lyrics.lyrics}</p>
         <p>there should eb lyrics above me</p>

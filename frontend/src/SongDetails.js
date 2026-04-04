@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import "./Dashboard.js";
 import { AuthContext } from "./context/AuthContext"; // import the global "cloud" to access our token and user
+import Comments from "./Comments";
 
 function SongDetails ({song, deleteSong, onBack}) {
     return(
@@ -66,6 +67,8 @@ function SongDetails ({song, deleteSong, onBack}) {
                   ⬅ Back to Home
                 </button>
               </div>
+
+              <Comments songId={song._id}/>
             </div>
     );
 }
