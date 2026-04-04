@@ -5,6 +5,7 @@ import { AuthContext } from "./context/AuthContext"; // import the global "cloud
 import Comments from "./Comments";
 
 function SongDetails ({song, deleteSong, onBack}) {
+
     return(
         <div className="card song-detail-card">
               <h2>Song Details</h2>

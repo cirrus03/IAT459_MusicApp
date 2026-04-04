@@ -24,6 +24,22 @@ function Comments(songId) {
   //fetch comments based on song id
   useEffect(()=> {  
     console.log(songId);
+    console.log("id: "+ songId.songId);
+  }, []);
+
+  useEffect(()=> {
+    const fetchComments = async () => {
+      try {
+        const res = await fetch(`http://localhost:5001/api/comments/${songId.songId}`);
+        const data = await res.json();
+        console.log(data);
+        setComments(data);
+
+      } catch(error) {
+        console.error(error);
+      }
+    }
+    fetchComments();
   }, []);
   
 
