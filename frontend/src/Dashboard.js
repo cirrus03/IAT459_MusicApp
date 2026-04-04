@@ -4,6 +4,8 @@ import "./App.css";
 
 import { AuthContext } from "./context/AuthContext"; // import the global "cloud" to access our token and user
 
+import Comments from "./Comments";
+
 function Dashboard() {
   /////////// STATES ////////////////
   const [message, setMessage] = useState("");
@@ -442,6 +444,9 @@ const handleToggleFavorite = async (songId) => {
           Add tracks, organize details, and browse your collection in one place.
         </p>
       </header>
+
+      <Comments />
+
       <div className="lyric-testing">
         <p>{lyrics.lyrics}</p>
         <p>there should eb lyrics above me</p>
@@ -527,6 +532,7 @@ const handleToggleFavorite = async (songId) => {
         {/* /////////// RIGHT PANEL /////////// */}
         {/* right panel: the grid of songs & changes to detailed view on click */}
         <div className="right-panel">
+          
           {selectedSong ? (
             /////////// DETAIL VIEW ///////////
             <div className="card song-detail-card">

@@ -32,8 +32,45 @@ function Comments() {
 
   ////////// FUNCTIONS /////////////////////
   //handle on change
+  const handleCommentChange= (e) => {
+    setFormData({
+      ...formData, [e.target.name]: e.target.value
+    });
+  };
 
   //handle submit
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault(); //prevent default submission behaviour
+
+    try {
+      //post comment
+      const response = await fetch(
+        "http://localhost:5001/api/comments",
+        {
+          method: "POST" ,
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: token, //attach token to prove user auth when posting a comment
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      //update comment state in UI
+      const newComment = await response.json(); //get the new comment
+      setComments([...comments, newComment]);  //spread operateor for prev comments and add new comment
+
+      //clear comment box ui
+      setFormData(
+        {
+          textBody: "",
+        }
+      );
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   //delete a comment (if you are the user or admin)
 
@@ -57,9 +94,9 @@ function Comments() {
           <button
                 className="primary-btn"
                 type="submit"
-                onClick={handleSubmit}
+                // onClick={handleCommentSubmit}
               >
-                Add Song
+                Post comment
               </button>
         </form>
 
@@ -69,3 +106,5 @@ function Comments() {
         
     );
 }
+
+export default Comments;

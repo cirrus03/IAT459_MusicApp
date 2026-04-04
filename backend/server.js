@@ -87,7 +87,7 @@ app.use("/api/soundchart", soundchartRoutes);
 app.use("/api/profile", profileRoutes);
 
 //comment route
-app.use("api/comment", commentRoutes);
+app.use("/api/comments", commentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
