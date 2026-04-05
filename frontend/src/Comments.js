@@ -95,6 +95,8 @@ function Comments(songId) {
 
   return(
     <div>
+      <div className="form-container"> 
+      
       <p>I am the comment component</p>
 
       <div className="form-container">
@@ -116,6 +118,20 @@ function Comments(songId) {
                 Post comment
               </button>
         </form>
+        </div>
+
+        <div>
+          {
+            (!comments || comments.length === 0) ? 
+            ( <p>no comments available</p> ) : (
+              comments.map((comment) => (
+                <div key={comment._id}>
+                  <p>{comment.body}</p>
+                </div>
+              ))
+            )
+          }
+        </div>
 
       </div>
 
