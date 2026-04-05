@@ -31,10 +31,14 @@ router.post("/", auth, async (req, res) => {
     console.log("req.body:", req.body);
     console.log("typeof songId:", typeof req.body.songId);
 
-
     try {
         const newComment = await comment.save();
-        res.status(201).json(newComment);
+
+        //populate so that the author and delete fields will instantly update i think
+        const populatedComment = await newComment.populate("author");
+
+
+        res.status(201).json(populatedComment);
     } catch (err) {
         res.status(400).json({ message: err.message });
         console.log(err.message);
@@ -44,6 +48,26 @@ router.post("/", auth, async (req, res) => {
 
 //DELETE ROUTE delete a comment (if you are the op)
 //add body here
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+
+    if(!comment) {
+      return res.status(404).json( {message: "comment not found"} );
+    }
+
+    //check ownership before deleting
+    if (comment.author.toString() !== req.user.id) {
+      return res.status(403).json( {message: "forbidden. cannot delete other's comments"});
+    }
+
+    await Comment.findByIdAndDelete(req.params.id);
+    res.json( {message: "plant deleted"});
+
+  } catch(error) {
+      res.status(500).json( {message: "server error"} );
+  }
+});
 
 //EDIT ROUTE edit teh content of a comment (if you are the op)
 

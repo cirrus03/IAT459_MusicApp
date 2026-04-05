@@ -90,6 +90,28 @@ function Comments(songId) {
   };
 
   //delete a comment (if you are the user or admin)
+  const handleDeleteComment = async (comment_id) => {
+    try {
+      const res = await fetch(`http://localhost:5001/api/comments/${comment_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: token,
+          }
+        });
+
+        if (!res.ok) {
+        throw new Error("Failed to delete comment");
+      }
+
+      setComments(comments.filter((comment) => comment._id !== comment_id));
+    } catch(error) {
+        console.error(error);
+        alert("Could not delete comment");
+    }
+  };
+
+
 
   //edit commment?
 
@@ -129,7 +151,7 @@ function Comments(songId) {
                   <p>{comment.author.username}</p>
                   <p>{comment.body}</p>
 
-                  {user.id === comment.author._id && <button>delete</button>}
+                  {user.id === comment.author._id && <button onClick={() => {handleDeleteComment(comment._id)} } > delete</button>}
                 </div>
               ))
             )
