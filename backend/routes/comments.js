@@ -69,6 +69,9 @@ router.delete("/:id", auth, async (req, res) => {
   }
 });
 
+
+//DELETE ROUTE for deleting all songs? will do this later if time permits
+
 //EDIT ROUTE edit teh content of a comment (if you are the op)
 
 module.exports = router;
