@@ -128,6 +128,8 @@ function Comments(songId) {
                 <div key={comment._id}>
                   <p>{comment.author.username}</p>
                   <p>{comment.body}</p>
+
+                  {user.id === comment.author._id && <button>delete</button>}
                 </div>
               ))
             )
