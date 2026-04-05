@@ -9,6 +9,7 @@ router.get("/:songId", async (req, res) => {
   try {
     // const comments = await Comment.find( {song: req.songId} ) ; //find all the comments that reference speficied song
     const comments = await Comment.find({ song: req.params.songId })
+    .populate("author", "username");
     res.json(comments);
   } catch (err) {
     res.status(500).json({ message: err.message });

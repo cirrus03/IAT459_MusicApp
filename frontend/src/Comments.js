@@ -126,6 +126,7 @@ function Comments(songId) {
             ( <p>no comments available</p> ) : (
               comments.map((comment) => (
                 <div key={comment._id}>
+                  <p>{comment.author.username}</p>
                   <p>{comment.body}</p>
                 </div>
               ))
