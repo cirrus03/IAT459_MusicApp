@@ -4,6 +4,9 @@ import "./App.css";
 
 import { AuthContext } from "./context/AuthContext"; // import the global "cloud" to access our token and user
 
+import Comments from "./Comments";
+import SongDetails from "./SongDetails";
+
 function Dashboard() {
   /////////// STATES ////////////////
   const [message, setMessage] = useState("");
@@ -122,21 +125,21 @@ useEffect(() => {
   //   fetchYTPlaylist();
   // }, []);
 
-  useEffect(() => {
-    const fetchSounchartChart = async () => {
-      try {
-        const res = await fetch("http://localhost:5001/api/soundchart/chart", {
-          method: "GET",
-        });
-        const data = await res.json();
-        console.log(data);
-      } catch (err) {
-        console.error("Error fetching soundchart chart:", err);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchSounchartChart = async () => {
+  //     try {
+  //       const res = await fetch("http://localhost:5001/api/soundchart/chart", {
+  //         method: "GET",
+  //       });
+  //       const data = await res.json();
+  //       console.log(data);
+  //     } catch (err) {
+  //       console.error("Error fetching soundchart chart:", err);
+  //     }
+  //   };
 
-    fetchSounchartChart();
-  }, []);
+  //   fetchSounchartChart();
+  // }, []);
 
   //fetching song list
   useEffect(() => {
@@ -442,6 +445,7 @@ const handleToggleFavorite = async (songId) => {
           Add tracks, organize details, and browse your collection in one place.
         </p>
       </header>
+
       <div className="lyric-testing">
         <p>{lyrics.lyrics}</p>
         <p>there should eb lyrics above me</p>
@@ -527,70 +531,16 @@ const handleToggleFavorite = async (songId) => {
         {/* /////////// RIGHT PANEL /////////// */}
         {/* right panel: the grid of songs & changes to detailed view on click */}
         <div className="right-panel">
+          
           {selectedSong ? (
             /////////// DETAIL VIEW ///////////
-            <div className="card song-detail-card">
-              <h2>Song Details</h2>
+          
+              <SongDetails  //refactored
+                deleteSong={handleDelete}
+                song={selectedSong}
+                onBack={() => setSelectedSong(null)}
+              />
 
-              {selectedSong.imgUrl ? (
-                <img src={selectedSong.imgUrl} alt={selectedSong.title} />
-              ) : (
-                <div className="placeholder">No Cover</div>
-              )}
-
-              <table className="song-detail-table">
-                <tbody>
-                  <tr>
-                    <th>Title</th>
-                    <td>{selectedSong.title || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Artist</th>
-                    <td>{selectedSong.artist || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Album</th>
-                    <td>{selectedSong.album || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Release</th>
-                    <td>{selectedSong.releaseDate || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Language</th>
-                    <td>{selectedSong.language || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Genre</th>
-                    <td>{selectedSong.genre || "N/A"}</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div className="lyrics-section">
-                <h3>Lyrics</h3>
-                {selectedSong.lyrics ? (
-                  <p className="lyrics-text">{selectedSong.lyrics}</p>
-                ) : (
-                  <p className="no-lyrics">No lyrics available</p>
-                )}
-              </div>
-
-              <div className="detail-actions">
-                <button
-                  className="secondary-btn-delete"
-                  onClick={() => handleDelete(selectedSong._id)}
-                >
-                  Delete Song
-                </button>
-                <button
-                  className="secondary-btn"
-                  onClick={() => setSelectedSong(null)}
-                >
-                  ⬅ Back to Home
-                </button>
-              </div>
-            </div>
           ) : (
             // /////////// SONG GRID + SEARCH & FILTER ///////////
             <>
@@ -754,7 +704,7 @@ const handleToggleFavorite = async (songId) => {
                           handleToggleFavorite(song._id);
                         }}
                       >
-                        {favorites.includes(song._id) ? "★ Favorited" : "☆ Favorite"}
+                        {favorites.includes(song._id) ? "★ Favourited" : "☆ Favourite"}
                       </button>
 
                       <button
