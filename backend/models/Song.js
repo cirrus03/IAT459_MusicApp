@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const SongSchema = new mongoose.Schema({
@@ -24,5 +23,12 @@ const SongSchema = new mongoose.Schema({
   lyrics: {
     type: String,
   },
+
+  // store which user created this song
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
+
 module.exports = mongoose.model("Song", SongSchema);
