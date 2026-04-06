@@ -6,7 +6,8 @@ import Comments from "./Comments";
 
 function SongDetails ({song, deleteSong, onBack}) {
 
-  const [lyrics, setLyrics] = useState( {lyrics: ""});
+  const [lyrics, setLyrics] = useState(null); // null = not fetched yet
+  const [isLoadingLyrics, setIsLoadingLyrics] = useState(false);
 
     useEffect(() => {
         const fetchLyrics = async () => {
@@ -15,86 +16,100 @@ function SongDetails ({song, deleteSong, onBack}) {
             console.log(song.title);
 
             const res = await fetch(`http://localhost:5001/api/lyrics?artist=${encodeURIComponent(song.artist)}&title=${encodeURIComponent(song.title)}`);
+            
+            //check if response is 404 (no lyrics found)
+            if (!res.ok) {
+              setLyrics(null);
+              return;
+            } 
+
             const data = await res.json();
-            
-            if(data) {
-              setLyrics(data);
+            if (data?.lyrics && data.lyrics.trim() !== "") {
+              setLyrics(data.lyrics);
+            } else {
+              setLyrics(null);
             }
-            
-      
+
           } catch (err) {
             console.error("Error fetching lyrics test:", err);
+            console.error(err);
+            setLyrics(null);
+          } finally {
+            setIsLoadingLyrics(false);
           }
         };
     
         fetchLyrics();
       }, [song?.artist, song?.title]);
 
-    return(
-        <div className="card song-detail-card">
-              <h2>Song Details</h2>
+      const displayLyrics =
+        lyrics || song.lyrics || null;
 
-              {song.imgUrl ? (
-                <img src={song.imgUrl} alt={song.title} />
-              ) : (
-                <div className="placeholder">No Cover</div>
-              )}
+    return (
+      <div className="card song-detail-card">
+        <h2>Song Details</h2>
 
-              <table className="song-detail-table">
-                <tbody>
-                  <tr>
-                    <th>Title</th>
-                    <td>{song.title || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Artist</th>
-                    <td>{song.artist || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Album</th>
-                    <td>{song.album || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Release</th>
-                    <td>{song.releaseDate || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Language</th>
-                    <td>{song.language || "N/A"}</td>
-                  </tr>
-                  <tr>
-                    <th>Genre</th>
-                    <td>{song.genre || "N/A"}</td>
-                  </tr>
-                </tbody>
-              </table>
+        {song.imgUrl ? (
+          <img src={song.imgUrl} alt={song.title} />
+        ) : (
+          <div className="placeholder">No Cover</div>
+        )}
 
-              <div className="lyrics-section">
-                <h3>Lyrics</h3>
-                {lyrics.lyrics !=="" || song.lyrics ? (
-                  <p className="lyrics-text">{lyrics.lyrics || song.lyrics}</p>
-                ) : (
-                  <p className="no-lyrics">No lyrics available</p>
-                )}
-              </div>
+        <table className="song-detail-table">
+          <tbody>
+            <tr>
+              <th>Title</th>
+              <td>{song.title || "N/A"}</td>
+            </tr>
+            <tr>
+              <th>Artist</th>
+              <td>{song.artist || "N/A"}</td>
+            </tr>
+            <tr>
+              <th>Album</th>
+              <td>{song.album || "N/A"}</td>
+            </tr>
+            <tr>
+              <th>Release</th>
+              <td>{song.releaseDate || "N/A"}</td>
+            </tr>
+            <tr>
+              <th>Language</th>
+              <td>{song.language || "N/A"}</td>
+            </tr>
+            <tr>
+              <th>Genre</th>
+              <td>{song.genre || "N/A"}</td>
+            </tr>
+          </tbody>
+        </table>
 
-              <div className="detail-actions">
-                <button
-                  className="secondary-btn-delete"
-                  onClick={() => deleteSong(song._id)}
-                >
-                  Delete Song
-                </button>
-                <button
-                  className="secondary-btn"
-                  onClick={onBack}
-                >
-                  ⬅ Back to Home
-                </button>
-              </div>
+        <div className="lyrics-section">
+          <h3>Lyrics</h3>
 
-              <Comments songId={song._id}/>
-            </div>
+          {isLoadingLyrics ? (
+            <p>searching for lyrics...</p>
+          ) : displayLyrics ? (
+            <p className="lyrics-text">{displayLyrics}</p>
+          ) : (
+            <p className="no-lyrics">No lyrics found</p>
+          )}
+        </div>
+
+        <div className="detail-actions">
+          <button
+            className="secondary-btn-delete"
+            onClick={() => deleteSong(song._id)}
+          >
+            Delete Song
+          </button>
+          <button className="secondary-btn" onClick={onBack}>
+            ⬅ Back to Home
+          </button>
+        </div>
+
+        <Comments songId={song._id} />
+      </div>
     );
 }
 
