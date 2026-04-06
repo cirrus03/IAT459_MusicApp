@@ -28,8 +28,8 @@ router.get("/chart", async (req, res) => {
     const songsList = chartData.items.slice(0, 10); //get array of 10 songs only sorry guys
     const arraySongsList = songsList.map((song) => (song.song));
 
-    console.log(arraySongsList);
-    console.log("made it to end of block?");
+    // console.log(arraySongsList);
+    // console.log("made it to end of block?");
     res.json(arraySongsList);
 
   } catch (err) {

@@ -12,7 +12,7 @@ function Dashboard() {
   const [message, setMessage] = useState("");
 
   // store favorited song IDs for quick lookup
-const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
   // store the list of songs fetched from the database.
   // initial value is an empty array [] because we haven't fetched data yet.
@@ -71,23 +71,23 @@ const [favorites, setFavorites] = useState([]);
   // }, []);
 
   // fetch user's favorites
-useEffect(() => {
-  if (token) {
-    fetch("http://localhost:5001/api/profile", {
-      headers: {
-        Authorization: token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.favorites) {
-          // store only IDs for easy checking
-          setFavorites(data.favorites.map((song) => song._id));
-        }
+  useEffect(() => {
+    if (token) {
+      fetch("http://localhost:5001/api/profile", {
+        headers: {
+          Authorization: token,
+        },
       })
-      .catch((err) => console.error("Error fetching favorites:", err));
-  }
-}, [token]);
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.favorites) {
+            // store only IDs for easy checking
+            setFavorites(data.favorites.map((song) => song._id));
+          }
+        })
+        .catch((err) => console.error("Error fetching favorites:", err));
+    }
+  }, [token]);
 
   //soundcharts call
   useEffect(() => {
@@ -98,7 +98,7 @@ useEffect(() => {
         });
         const data = await res.json();
 
-        console.log("this is what the frontend received from the backend: ")
+        console.log("this is what the frontend received from the backend: ");
         console.log(data);
 
         setTopSongs(data);
@@ -180,33 +180,32 @@ useEffect(() => {
   };
 
   // toggle favorite / unfavorite
-const handleToggleFavorite = async (songId) => {
-  try {
-    const isFavorited = favorites.includes(songId);
+  const handleToggleFavorite = async (songId) => {
+    try {
+      const isFavorited = favorites.includes(songId);
 
-    const url = `http://localhost:5001/api/profile/favorite/${songId}`;
-    const method = isFavorited ? "DELETE" : "POST";
+      const url = `http://localhost:5001/api/profile/favorite/${songId}`;
+      const method = isFavorited ? "DELETE" : "POST";
 
-    const res = await fetch(url, {
-      method,
-      headers: {
-        Authorization: token,
-      },
-    });
+      const res = await fetch(url, {
+        method,
+        headers: {
+          Authorization: token,
+        },
+      });
 
-    if (!res.ok) throw new Error("Failed to update favorite");
+      if (!res.ok) throw new Error("Failed to update favorite");
 
-    // update UI instantly
-    if (isFavorited) {
-      setFavorites(favorites.filter((id) => id !== songId));
-    } else {
-      setFavorites([...favorites, songId]);
+      // update UI instantly
+      if (isFavorited) {
+        setFavorites(favorites.filter((id) => id !== songId));
+      } else {
+        setFavorites([...favorites, songId]);
+      }
+    } catch (err) {
+      console.error(err);
     }
-
-  } catch (err) {
-    console.error(err);
-  }
-};
+  };
 
   // handles the "Add Song" button click.
   const handleSubmit = async (e) => {
@@ -339,24 +338,30 @@ const handleToggleFavorite = async (songId) => {
 
   const handleTopTenSongClick = async (chartSong) => {
     try {
-      const res = await fetch("http://localhost:5001/api/song-from-soundcharts",
+      const res = await fetch(
+        "http://localhost:5001/api/songs/song-from-soundcharts",
         {
-          method: "POST", 
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: {
+
+          body: JSON.stringify({
             uuid: chartSong.uuid,
             title: chartSong.name,
             artist: chartSong.creditName,
             imgUrl: chartSong.imageUrl,
-          }
-        }
-       );
+          }),
+        },
+      );
 
-       const savedToDbSong = await res.json();
-       setSelectedSong(savedToDbSong);
-
+      const savedToDbSong = await res.json();
+      console.log(savedToDbSong);
+      if(res.ok) {
+        setSelectedSong(savedToDbSong);
+        console.log("res ok");
+      }
+      
     } catch (error) {
       console.error(error);
     }
@@ -416,17 +421,17 @@ const handleToggleFavorite = async (songId) => {
           )}
         </div>
 
-       <div className="profile-top-actions">
-        <Link to="/profile" className="profile-link-btn">
-          Profile
-        </Link>
-        <Link to="/" className="profile-link-btn">
-          Home
-        </Link>
-        <button className="logout-btn" onClick={logout}>
-          Logout
-        </button>
-      </div>
+        <div className="profile-top-actions">
+          <Link to="/profile" className="profile-link-btn">
+            Profile
+          </Link>
+          <Link to="/" className="profile-link-btn">
+            Home
+          </Link>
+          <button className="logout-btn" onClick={logout}>
+            Logout
+          </button>
+        </div>
       </div>
       {/* small backend status card */}
       {/* <div className="status-card">
@@ -525,16 +530,14 @@ const handleToggleFavorite = async (songId) => {
         {/* /////////// RIGHT PANEL /////////// */}
         {/* right panel: the grid of songs & changes to detailed view on click */}
         <div className="right-panel">
-          
           {selectedSong ? (
             /////////// DETAIL VIEW ///////////
-          
-              <SongDetails  //refactored
-                deleteSong={handleDelete}
-                song={selectedSong}
-                onBack={() => setSelectedSong(null)}
-              />
 
+            <SongDetails //refactored
+              deleteSong={handleDelete}
+              song={selectedSong}
+              onBack={() => setSelectedSong(null)}
+            />
           ) : (
             // /////////// SONG GRID + SEARCH & FILTER ///////////
             <>
@@ -657,7 +660,7 @@ const handleToggleFavorite = async (songId) => {
                 */}
                 {topSongs.map((song) => (
                   <div
-                    key={song?.song?.uuid}
+                    key={song?.uuid}
                     className="song-card"
                     // the 'key' prop is required by React for performance.
                     // It helps React track which items changed, added, or removed
@@ -668,7 +671,7 @@ const handleToggleFavorite = async (songId) => {
                       IF song.imgUrl exists, show the Image.
                       ELSE (:), show the "No Image" placeholder.
                       */}
-                      {song?.song?.imageUrl ? (
+                      {song?.imageUrl ? (
                         <img src={song.imageUrl} alt={song.name} />
                       ) : (
                         <div className="placeholder">Album art not found</div>
@@ -694,10 +697,6 @@ const handleToggleFavorite = async (songId) => {
                   </div>
                 ))}
               </div>
-
-              
-
-              
 
               <div className="section-heading">
                 <h3>User-Submitted Collection</h3>
@@ -751,7 +750,9 @@ const handleToggleFavorite = async (songId) => {
                           handleToggleFavorite(song._id);
                         }}
                       >
-                        {favorites.includes(song._id) ? "★ Favourited" : "☆ Favourite"}
+                        {favorites.includes(song._id)
+                          ? "★ Favourited"
+                          : "☆ Favourite"}
                       </button>
 
                       <button

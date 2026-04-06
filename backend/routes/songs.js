@@ -64,9 +64,16 @@ router.post("/", verifyToken, async (req, res) => {
 
 //POST ROUTE (specfically for when a top10 soundchart recc is clicked to create/find an existing db entry or whatever kill me now)
 router.post("/song-from-soundcharts", async (req, res) => {
+  console.log("i am inside the song-from-soundcharts route post")
+  console.log("uuid: ", req.body.uuid);
+  console.log("title: ", req.body.title);
+  console.log("artist: ", req.body.artist);
+  console.log("uuid: ", req.body.imgUrl);
+
   try {
+    console.log("inside try block db update");
     const song = await Song.findOneAndUpdate(
-      {uuid: req.body.uuid},
+      {externalId: req.body.uuid},
       {
         $set: {
           title: req.body.title,
@@ -80,6 +87,7 @@ router.post("/song-from-soundcharts", async (req, res) => {
       }
     );
 
+    console.log("this is the song: ", song);
     res.json(song);
 
   } catch(error) {
