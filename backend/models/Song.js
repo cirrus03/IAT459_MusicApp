@@ -24,6 +24,20 @@ const SongSchema = new mongoose.Schema({
     type: String,
   },
 
+  //for soundchart's generated songs id
+  externalId: {
+    type: String,
+    sparse: true, //apparently should only apply uniquness when this actually exists.... i think.
+    unique: true
+  },
+
+  //is it user created  or from sound chart
+  source: {
+    type: String,
+    enum: ["user", "soundcharts"],
+    default: "user"
+  },
+
   // store which user created this song
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,

@@ -91,55 +91,22 @@ useEffect(() => {
   }
 }, [token]);
 
-  //fetching spotify playlist test
-  //  useEffect(() => {
-  //   const fetchSpotifyPlaylist = async () => {
-  //     try {
-  //       const res = await fetch("http://localhost:5001/api/spotify/playlist", {
-  //         method: "GET"
-  //       });
-  //       const data = await res.json();
-  //       console.log(data);
-  //     } catch (err) {
-  //       console.error("Error fetching spotify plyalist:", err);
-  //     }
-  //   };
+  //soundcharts call
+  useEffect(() => {
+    const fetchSounchartChart = async () => {
+      try {
+        const res = await fetch("http://localhost:5001/api/soundchart/chart", {
+          method: "GET",
+        });
+        const data = await res.json();
+        console.log(data);
+      } catch (err) {
+        console.error("Error fetching soundchart chart:", err);
+      }
+    };
 
-  //   fetchSpotifyPlaylist();
-  // }, []);
-
-  //fetch youtube top 50 playlist
-  //  useEffect(() => {
-  //   const fetchYTPlaylist = async () => {
-  //     try {
-  //       const res = await fetch("http://localhost:5001/api/youtube/playlist", {
-  //         method: "GET"
-  //       });
-  //       const data = await res.json();
-  //       console.log(data);
-  //     } catch (err) {
-  //       console.error("Error fetching spotify plyalist:", err);
-  //     }
-  //   };
-
-  //   fetchYTPlaylist();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchSounchartChart = async () => {
-  //     try {
-  //       const res = await fetch("http://localhost:5001/api/soundchart/chart", {
-  //         method: "GET",
-  //       });
-  //       const data = await res.json();
-  //       console.log(data);
-  //     } catch (err) {
-  //       console.error("Error fetching soundchart chart:", err);
-  //     }
-  //   };
-
-  //   fetchSounchartChart();
-  // }, []);
+    fetchSounchartChart();
+  }, []);
 
   //fetching song list
   useEffect(() => {
