@@ -6,6 +6,30 @@ import Comments from "./Comments";
 
 function SongDetails ({song, deleteSong, onBack}) {
 
+  const [lyrics, setLyrics] = useState( {lyrics: ""});
+
+    useEffect(() => {
+        const fetchLyrics = async () => {
+          try {
+            console.log(song.artist);
+            console.log(song.title);
+
+            const res = await fetch(`http://localhost:5001/api/lyrics?artist=${encodeURIComponent(song.artist)}&title=${encodeURIComponent(song.title)}`);
+            const data = await res.json();
+            
+            if(data) {
+              setLyrics(data);
+            }
+            
+      
+          } catch (err) {
+            console.error("Error fetching lyrics test:", err);
+          }
+        };
+    
+        fetchLyrics();
+      }, [song?.artist, song?.title]);
+
     return(
         <div className="card song-detail-card">
               <h2>Song Details</h2>
@@ -47,8 +71,8 @@ function SongDetails ({song, deleteSong, onBack}) {
 
               <div className="lyrics-section">
                 <h3>Lyrics</h3>
-                {song.lyrics ? (
-                  <p className="lyrics-text">{song.lyrics}</p>
+                {lyrics.lyrics !=="" || song.lyrics ? (
+                  <p className="lyrics-text">{lyrics.lyrics || song.lyrics}</p>
                 ) : (
                   <p className="no-lyrics">No lyrics available</p>
                 )}

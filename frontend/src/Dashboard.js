@@ -45,9 +45,9 @@ const [favorites, setFavorites] = useState([]);
   });
 
   //state for holding testing lyrics
-  const [lyrics, setLyrics] = useState({
-    lyrics: "",
-  });
+  // const [lyrics, setLyrics] = useState({
+  //   lyrics: "",
+  // });
 
   // tap into our AuthContext
   // we grab the token, the decoded user object (for the greeting),
@@ -57,20 +57,20 @@ const [favorites, setFavorites] = useState([]);
   ////// USE EFFECT rendering ///////////////////
 
   //fetching lyric test
-  useEffect(() => {
-    const fetchLyrics = async () => {
-      try {
-        const res = await fetch("http://localhost:5001/api/lyrics");
-        const data = await res.json();
-        console.log(data);
-        // setLyrics(data);
-      } catch (err) {
-        console.error("Error fetching lyrics test:", err);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchLyrics = async () => {
+  //     try {
+  //       const res = await fetch("http://localhost:5001/api/lyrics");
+  //       const data = await res.json();
+  //       console.log(data);
+  //       // setLyrics(data);
+  //     } catch (err) {
+  //       console.error("Error fetching lyrics test:", err);
+  //     }
+  //   };
 
-    fetchLyrics();
-  }, []);
+  //   fetchLyrics();
+  // }, []);
 
   // fetch user's favorites
 useEffect(() => {
@@ -446,10 +446,10 @@ const handleToggleFavorite = async (songId) => {
         </p>
       </header>
 
-      <div className="lyric-testing">
+      {/* <div className="lyric-testing">
         <p>{lyrics.lyrics}</p>
         <p>there should eb lyrics above me</p>
-      </div>
+      </div> */}
       <div className="content-wrapper">
         {/* /////////// LEFT PANEL /////////// */}
         {/* left panel: data entry form*/}
