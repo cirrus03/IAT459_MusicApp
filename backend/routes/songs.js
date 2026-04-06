@@ -62,6 +62,32 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
+//POST ROUTE (specfically for when a top10 soundchart recc is clicked to create/find an existing db entry or whatever kill me now)
+router.post("/song-from-soundcharts", async (req, res) => {
+  try {
+    const song = await Song.findOneAndUpdate(
+      {uuid: req.body.uuid},
+      {
+        $set: {
+          title: req.body.title,
+          artist: req.body.artist,
+          imageUrl: req.body.imgUrl,
+        }
+      },
+      {
+        new: true, //apparently will return the updated doc instead of old one if it finds it
+        upsert: true, //..probably makes the new doc if it can find it from what i understand
+      }
+    );
+
+    res.json(song);
+
+  } catch(error) {
+    res.status(500).json( {message: error.message} );
+  }
+
+});
+
 // DELETE ROUTE
 router.delete("/:id", async (req, res) => {
   try {

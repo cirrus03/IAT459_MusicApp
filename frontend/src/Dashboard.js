@@ -44,10 +44,8 @@ const [favorites, setFavorites] = useState([]);
     releaseYear: [],
   });
 
-  //state for holding testing lyrics
-  // const [lyrics, setLyrics] = useState({
-  //   lyrics: "",
-  // });
+  //state for the top 10 songs from soundcharts
+  const [topSongs, setTopSongs] = useState([]);
 
   // tap into our AuthContext
   // we grab the token, the decoded user object (for the greeting),
@@ -93,19 +91,23 @@ useEffect(() => {
 
   //soundcharts call
   useEffect(() => {
-    const fetchSounchartChart = async () => {
+    const fetchSoundchartChart = async () => {
       try {
         const res = await fetch("http://localhost:5001/api/soundchart/chart", {
           method: "GET",
         });
         const data = await res.json();
+
+        console.log("this is what the frontend received from the backend: ")
         console.log(data);
+
+        setTopSongs(data);
       } catch (err) {
         console.error("Error fetching soundchart chart:", err);
       }
     };
 
-    fetchSounchartChart();
+    fetchSoundchartChart();
   }, []);
 
   //fetching song list
@@ -332,6 +334,31 @@ const handleToggleFavorite = async (songId) => {
     } catch (err) {
       console.error(err);
       alert("Could not delete user");
+    }
+  };
+
+  const handleTopTenSongClick = async (chartSong) => {
+    try {
+      const res = await fetch("http://localhost:5001/api/song-from-soundcharts",
+        {
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: {
+            uuid: chartSong.uuid,
+            title: chartSong.name,
+            artist: chartSong.creditName,
+            imgUrl: chartSong.imageUrl,
+          }
+        }
+       );
+
+       const savedToDbSong = await res.json();
+       setSelectedSong(savedToDbSong);
+
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -620,7 +647,60 @@ const handleToggleFavorite = async (songId) => {
               </div>
 
               <div className="section-heading">
-                <h3>Your Collection</h3>
+                <h3>Top Picks</h3>
+                <p>Today's top ten songs worldwide</p>
+              </div>
+
+              <div className="song-grid">
+                {/* .map() loops through the 'songs' array.
+                For every song item, it creates a <div> (song-card).
+                */}
+                {topSongs.map((song) => (
+                  <div
+                    key={song?.song?.uuid}
+                    className="song-card"
+                    // the 'key' prop is required by React for performance.
+                    // It helps React track which items changed, added, or removed
+                    onClick={() => handleTopTenSongClick(song)}
+                  >
+                    <div className="image-container">
+                      {/* conditional rendering:
+                      IF song.imgUrl exists, show the Image.
+                      ELSE (:), show the "No Image" placeholder.
+                      */}
+                      {song?.song?.imageUrl ? (
+                        <img src={song.imageUrl} alt={song.name} />
+                      ) : (
+                        <div className="placeholder">Album art not found</div>
+                      )}
+                    </div>
+
+                    <div className="card-details">
+                      <h3>{song.name}</h3>
+                      <p>
+                        <strong>Artist:</strong> {song.creditName}
+                      </p>
+
+                      {/* <button
+                        className="favorite-btn"
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevents opening detail view
+                          handleToggleFavorite(song._id);
+                        }}
+                      >
+                        {favorites.includes(song._id) ? "★ Favourited" : "☆ Favourite"}
+                      </button> */}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              
+
+              
+
+              <div className="section-heading">
+                <h3>User-Submitted Collection</h3>
                 <p>{songs.length} song(s)</p>
               </div>
 

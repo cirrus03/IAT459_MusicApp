@@ -23,6 +23,9 @@ const SongSchema = new mongoose.Schema({
   lyrics: {
     type: String,
   },
+  imageUrl: {
+    type: String,
+  },
 
   //for soundchart's generated songs id
   externalId: {
