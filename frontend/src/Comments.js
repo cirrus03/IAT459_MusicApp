@@ -28,9 +28,7 @@ function Comments(songId) {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:5001/api/comments/${songId.songId}`,
-        );
+        const res = await fetch(`http://localhost:5001/api/comments/${songId?.songId}`);
         const data = await res.json();
         console.log(data);
         setComments(data);
