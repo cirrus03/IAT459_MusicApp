@@ -6,6 +6,7 @@ import ProtectedRoute from "./ProtectedRoute"; // the "bounce" component
 import Register from "./Register";
 import General from "./General";
 import Profile from "./Profile";
+import SongForm from "./SongForm";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/general" element={<General />} />
+          <Route path="/add-song" element={<SongForm />} />
 
           {/* protected route: the Dashboard is nested inside ProtectedRoute.
               It checks for a token before allowing the 

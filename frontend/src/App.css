@@ -50,6 +50,23 @@ html {
   line-height: 1.5;
 }
 
+.add-song-btn {
+  padding: 12px 18px;
+  background: #a855f7;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-decoration: none;
+}
+
+.add-song-btn:hover {
+  background: #9333ea;
+  transform: translateY(-1px);
+}
+
 .logout-btn {
   padding: 12px 18px;
   background: #a855f7;
@@ -114,6 +131,7 @@ html {
   gap: 24px;
   align-items: flex-start;
   width: 100%;
+  justify-content: center;
 }
 
 .card {
@@ -141,10 +159,9 @@ html {
 
 /* left panel: the form to enter data */
 .left-panel {
-  width: 320px;
+  width: 100%;
+  max-width: 800px;
   flex-shrink: 0;
-  position: sticky;
-  top: 20px;
 }
 
 .song-form {
@@ -194,6 +211,23 @@ html {
 .primary-btn:hover {
   background: #9333ea;
   transform: translateY(-1px);
+}
+
+.form-actions-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.form-actions-row .primary-btn,
+.form-actions-row .profile-link-btn {
+  flex: 1;
+  margin-top: 0;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 /* right panel: search, filters, and grid of songs */
@@ -486,16 +520,15 @@ html {
   gap: 10px;
 }
 
+.detail-actions button {
+  flex: 1; /* This makes both buttons equal width */
+}
+
 .secondary-btn {
-  flex: 1;
-  padding: 10px;
-  background: #334155;
-  color: #f8fafc;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .secondary-btn-delete {
@@ -747,4 +780,65 @@ html {
 
 .profile-info-row {
   margin: 10px 0;
+}
+
+/* --- comments --- */
+
+.comments-section {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.comments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.comment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 14px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.comment-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.comment-author {
+  color: #c084fc;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.comment-body {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.no-comments {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin: 10px 0;
+}
+
+/* Ensure delete button is aligned properly */
+.comment-item .admin-delete-btn {
+  margin-top: 0;
+  padding: 6px 10px;
+  font-size: 0.75rem;
 }

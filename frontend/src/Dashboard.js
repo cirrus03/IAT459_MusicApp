@@ -12,7 +12,7 @@ function Dashboard() {
   const [message, setMessage] = useState("");
 
   // store favorited song IDs for quick lookup
-const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
   // store the list of songs fetched from the database.
   // initial value is an empty array [] because we haven't fetched data yet.
@@ -73,23 +73,23 @@ const [favorites, setFavorites] = useState([]);
   // }, []);
 
   // fetch user's favorites
-useEffect(() => {
-  if (token) {
-    fetch("http://localhost:5001/api/profile", {
-      headers: {
-        Authorization: token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.favorites) {
-          // store only IDs for easy checking
-          setFavorites(data.favorites.map((song) => song._id));
-        }
+  useEffect(() => {
+    if (token) {
+      fetch("http://localhost:5001/api/profile", {
+        headers: {
+          Authorization: token,
+        },
       })
-      .catch((err) => console.error("Error fetching favorites:", err));
-  }
-}, [token]);
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.favorites) {
+            // store only IDs for easy checking
+            setFavorites(data.favorites.map((song) => song._id));
+          }
+        })
+        .catch((err) => console.error("Error fetching favorites:", err));
+    }
+  }, [token]);
 
   //fetching spotify playlist test
   //  useEffect(() => {
@@ -211,33 +211,32 @@ useEffect(() => {
   };
 
   // toggle favorite / unfavorite
-const handleToggleFavorite = async (songId) => {
-  try {
-    const isFavorited = favorites.includes(songId);
+  const handleToggleFavorite = async (songId) => {
+    try {
+      const isFavorited = favorites.includes(songId);
 
-    const url = `http://localhost:5001/api/profile/favorite/${songId}`;
-    const method = isFavorited ? "DELETE" : "POST";
+      const url = `http://localhost:5001/api/profile/favorite/${songId}`;
+      const method = isFavorited ? "DELETE" : "POST";
 
-    const res = await fetch(url, {
-      method,
-      headers: {
-        Authorization: token,
-      },
-    });
+      const res = await fetch(url, {
+        method,
+        headers: {
+          Authorization: token,
+        },
+      });
 
-    if (!res.ok) throw new Error("Failed to update favorite");
+      if (!res.ok) throw new Error("Failed to update favorite");
 
-    // update UI instantly
-    if (isFavorited) {
-      setFavorites(favorites.filter((id) => id !== songId));
-    } else {
-      setFavorites([...favorites, songId]);
+      // update UI instantly
+      if (isFavorited) {
+        setFavorites(favorites.filter((id) => id !== songId));
+      } else {
+        setFavorites([...favorites, songId]);
+      }
+    } catch (err) {
+      console.error(err);
     }
-
-  } catch (err) {
-    console.error(err);
-  }
-};
+  };
 
   // handles the "Add Song" button click.
   const handleSubmit = async (e) => {
@@ -422,17 +421,20 @@ const handleToggleFavorite = async (songId) => {
           )}
         </div>
 
-       <div className="profile-top-actions">
-        <Link to="/profile" className="profile-link-btn">
-          Profile
-        </Link>
-        <Link to="/" className="profile-link-btn">
-          Home
-        </Link>
-        <button className="logout-btn" onClick={logout}>
-          Logout
-        </button>
-      </div>
+        <div className="profile-top-actions">
+          <Link to="/add-song" className="add-song-btn">
+            + Add Song
+          </Link>
+          <Link to="/profile" className="profile-link-btn">
+            Profile
+          </Link>
+          <Link to="/" className="profile-link-btn">
+            Home
+          </Link>
+          <button className="logout-btn" onClick={logout}>
+            Logout
+          </button>
+        </div>
       </div>
       {/* small backend status card */}
       {/* <div className="status-card">
@@ -451,96 +453,17 @@ const handleToggleFavorite = async (songId) => {
         <p>there should eb lyrics above me</p>
       </div> */}
       <div className="content-wrapper">
-        {/* /////////// LEFT PANEL /////////// */}
-        {/* left panel: data entry form*/}
-        <div className="left-panel">
-          <div className="card form-card">
-            <h3>Add New Song</h3>
-            <p className="form-description">
-              Enter song details to add a new track to your collection.
-            </p>
-
-            <form onSubmit={handleSubmit} className="song-form">
-              <label>Name</label>
-
-              {/* Note on Inputs:
-                - 'name' attribute must match the state key (e.g. "commonName")
-                - 'value' binds the input to the state (Controlled Component)
-                - 'onChange' updates the state when typing
-                */}
-              <input
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                placeholder="Enter song title"
-                required
-              />
-              <label>Artist</label>
-              <input
-                name="artist"
-                value={formData.artist}
-                onChange={handleChange}
-                placeholder="Enter artist name"
-              />
-              <label>Album</label>
-              <input
-                name="album"
-                value={formData.album}
-                onChange={handleChange}
-                placeholder="Enter album name"
-              />
-              <label>Release Date</label>
-              <input
-                name="releaseDate"
-                value={formData.releaseDate}
-                onChange={handleChange}
-                placeholder="e.g. 2024"
-              />
-              <label>Language</label>
-              <input
-                name="language"
-                value={formData.language}
-                onChange={handleChange}
-                placeholder="Enter language"
-              />
-              <label>Genre</label>
-              <input
-                name="genre"
-                value={formData.genre}
-                onChange={handleChange}
-                placeholder="Enter genre"
-              />
-              <label>Lyrics</label>
-              <input
-                name="lyrics"
-                value={formData.lyrics}
-                onChange={handleChange}
-                placeholder="Optional lyric snippet"
-              />
-              <button
-                className="primary-btn"
-                type="submit"
-                onClick={handleSubmit}
-              >
-                Add Song
-              </button>
-            </form>
-          </div>
-        </div>
-
         {/* /////////// RIGHT PANEL /////////// */}
         {/* right panel: the grid of songs & changes to detailed view on click */}
         <div className="right-panel">
-          
           {selectedSong ? (
             /////////// DETAIL VIEW ///////////
-          
-              <SongDetails  //refactored
-                deleteSong={handleDelete}
-                song={selectedSong}
-                onBack={() => setSelectedSong(null)}
-              />
 
+            <SongDetails //refactored
+              deleteSong={handleDelete}
+              song={selectedSong}
+              onBack={() => setSelectedSong(null)}
+            />
           ) : (
             // /////////// SONG GRID + SEARCH & FILTER ///////////
             <>
@@ -704,7 +627,9 @@ const handleToggleFavorite = async (songId) => {
                           handleToggleFavorite(song._id);
                         }}
                       >
-                        {favorites.includes(song._id) ? "★ Favourited" : "☆ Favourite"}
+                        {favorites.includes(song._id)
+                          ? "★ Favourited"
+                          : "☆ Favourite"}
                       </button>
 
                       <button
