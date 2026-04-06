@@ -3,22 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/chart", async (req, res) => {
+  console.log("entered api/soundchart/chart");
   try {
-    // console.log("inside the function");
-    // const chartResponse = await fetch(
-    //   "https://customer.api.soundcharts.com/api/v2/chart/song/by-platform/spotify?offset=0&limit=10",
-    //   {
-    //     headers: {
-    //       "x-app-id": "SCHANG6-API_41F9DF25",
-    //       "x-api-key": "5db998d43b8358a4",
-    //     },
-    //   },
-    // );
-
-
-    //global 28 for spotify daily i think
-    //airplay-daily for radio..?\
-    //we can also get albums from the 
     const chartResponse = await fetch(
       "https://customer.api.soundcharts.com/api/v2.14/chart/song/airplay-daily/ranking/latest?offset=0&limit=100",
       {
@@ -37,11 +23,14 @@ router.get("/chart", async (req, res) => {
           "Unknown chart error",
       );
     }
-    const chartData = await chartResponse.json();
 
-    console.log(chartData);
-    console.log("made it to end of block?");
-    res.json(chartData);
+    const chartData = await chartResponse.json();
+    const songsList = chartData.items.slice(0, 10); //get array of 10 songs only sorry guys
+    const arraySongsList = songsList.map((song) => (song.song));
+
+    // console.log(arraySongsList);
+    // console.log("made it to end of block?");
+    res.json(arraySongsList);
 
   } catch (err) {
     console.error("ERROR:", err.message);

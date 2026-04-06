@@ -25,8 +25,8 @@ router.get("/", async (req, res) => {
   try {
     const { artist, title } = req.query;
     console.log("lyrics route working");
-    console.log(artist);
-    console.log(title);
+    console.log("artists from lyrics route: ", artist);
+    console.log("title from lyrics route: ", title);
 
     const response= await fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`);
 

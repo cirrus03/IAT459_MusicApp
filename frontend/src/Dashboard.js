@@ -44,10 +44,8 @@ function Dashboard() {
     releaseYear: [],
   });
 
-  //state for holding testing lyrics
-  // const [lyrics, setLyrics] = useState({
-  //   lyrics: "",
-  // });
+  //state for the top 10 songs from soundcharts
+  const [topSongs, setTopSongs] = useState([]);
 
   // tap into our AuthContext
   // we grab the token, the decoded user object (for the greeting),
@@ -91,55 +89,26 @@ function Dashboard() {
     }
   }, [token]);
 
-  //fetching spotify playlist test
-  //  useEffect(() => {
-  //   const fetchSpotifyPlaylist = async () => {
-  //     try {
-  //       const res = await fetch("http://localhost:5001/api/spotify/playlist", {
-  //         method: "GET"
-  //       });
-  //       const data = await res.json();
-  //       console.log(data);
-  //     } catch (err) {
-  //       console.error("Error fetching spotify plyalist:", err);
-  //     }
-  //   };
+  //soundcharts call
+  useEffect(() => {
+    const fetchSoundchartChart = async () => {
+      try {
+        const res = await fetch("http://localhost:5001/api/soundchart/chart", {
+          method: "GET",
+        });
+        const data = await res.json();
 
-  //   fetchSpotifyPlaylist();
-  // }, []);
+        console.log("this is what the frontend received from the backend: ");
+        console.log(data);
 
-  //fetch youtube top 50 playlist
-  //  useEffect(() => {
-  //   const fetchYTPlaylist = async () => {
-  //     try {
-  //       const res = await fetch("http://localhost:5001/api/youtube/playlist", {
-  //         method: "GET"
-  //       });
-  //       const data = await res.json();
-  //       console.log(data);
-  //     } catch (err) {
-  //       console.error("Error fetching spotify plyalist:", err);
-  //     }
-  //   };
+        setTopSongs(data);
+      } catch (err) {
+        console.error("Error fetching soundchart chart:", err);
+      }
+    };
 
-  //   fetchYTPlaylist();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchSounchartChart = async () => {
-  //     try {
-  //       const res = await fetch("http://localhost:5001/api/soundchart/chart", {
-  //         method: "GET",
-  //       });
-  //       const data = await res.json();
-  //       console.log(data);
-  //     } catch (err) {
-  //       console.error("Error fetching soundchart chart:", err);
-  //     }
-  //   };
-
-  //   fetchSounchartChart();
-  // }, []);
+    fetchSoundchartChart();
+  }, []);
 
   //fetching song list
   useEffect(() => {
@@ -268,6 +237,7 @@ function Dashboard() {
         language: "",
         genre: "",
         lyrics: "",
+        source: "user",
       });
     } catch (err) {
       console.error(err);
@@ -364,6 +334,37 @@ function Dashboard() {
     } catch (err) {
       console.error(err);
       alert("Could not delete user");
+    }
+  };
+
+  const handleTopTenSongClick = async (chartSong) => {
+    try {
+      const res = await fetch(
+        "http://localhost:5001/api/songs/song-from-soundcharts",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            uuid: chartSong.uuid,
+            title: chartSong.name,
+            artist: chartSong.creditName,
+            imgUrl: chartSong.imageUrl,
+          }),
+        },
+      );
+
+      const savedToDbSong = await res.json();
+      console.log(savedToDbSong);
+      if(res.ok) {
+        setSelectedSong(savedToDbSong);
+        console.log("res ok");
+      }
+      
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -576,7 +577,56 @@ function Dashboard() {
               </div>
 
               <div className="section-heading">
-                <h3>Your Collection</h3>
+                <h3>Top Picks</h3>
+                <p>Today's top ten songs worldwide</p>
+              </div>
+
+              <div className="song-grid">
+                {/* .map() loops through the 'songs' array.
+                For every song item, it creates a <div> (song-card).
+                */}
+                {topSongs.map((song) => (
+                  <div
+                    key={song?.uuid}
+                    className="song-card"
+                    // the 'key' prop is required by React for performance.
+                    // It helps React track which items changed, added, or removed
+                    onClick={() => handleTopTenSongClick(song)}
+                  >
+                    <div className="image-container">
+                      {/* conditional rendering:
+                      IF song.imgUrl exists, show the Image.
+                      ELSE (:), show the "No Image" placeholder.
+                      */}
+                      {song?.imageUrl ? (
+                        <img src={song.imageUrl} alt={song.name} />
+                      ) : (
+                        <div className="placeholder">Album art not found</div>
+                      )}
+                    </div>
+
+                    <div className="card-details">
+                      <h3>{song.name}</h3>
+                      <p>
+                        <strong>Artist:</strong> {song.creditName}
+                      </p>
+
+                      {/* <button
+                        className="favorite-btn"
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevents opening detail view
+                          handleToggleFavorite(song._id);
+                        }}
+                      >
+                        {favorites.includes(song._id) ? "★ Favourited" : "☆ Favourite"}
+                      </button> */}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="section-heading">
+                <h3>User-Submitted Collection</h3>
                 <p>{songs.length} song(s)</p>
               </div>
 
