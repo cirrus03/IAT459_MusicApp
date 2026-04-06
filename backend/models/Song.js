@@ -38,7 +38,7 @@ const SongSchema = new mongoose.Schema({
   source: {
     type: String,
     enum: ["user", "soundcharts"],
-    default: "user"
+    default: "soundcharts"
   },
 
   // store which user created this song

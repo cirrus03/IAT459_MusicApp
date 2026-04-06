@@ -237,6 +237,7 @@ function Dashboard() {
         language: "",
         genre: "",
         lyrics: "",
+        source: "user",
       });
     } catch (err) {
       console.error(err);
