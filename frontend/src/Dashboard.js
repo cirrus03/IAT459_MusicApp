@@ -367,299 +367,271 @@ const handleTopTenSongClick = async (chartSong) => {
 
   //UI
   return (
-    <div className="page-container">
-      {/* top bar with greeting and logout */}
-      <div className="dashboard-topbar">
-        <div className="dashboard-user">
-          <p className="dashboard-eyebrow">Music Map</p>
-          {/* <p>{user.username}</p> */}
-          {user && (
-            <h2 className="dashboard-greeting">
-              Welcome back, {user.username}!
-            </h2>
-          )}
-          <p className="dashboard-subtext">
-            Build and manage your personal song collection.
-          </p>
-        </div>
-
-        <div className="profile-top-actions">
-  <Link to="/add-song" className="add-song-btn">
-    + Add Song
-  </Link>
-
-  <Link to="/profile" className="profile-link-btn">
-    Profile
-  </Link>
-
-  {user?.role === "admin" && (
-    <Link to="/admin" className="profile-link-btn">
-      Admin
-    </Link>
-  )}
-
-  <button className="logout-btn" onClick={logout}>
-    Logout
-  </button>
-</div>
-      </div>
-      {/* small backend status card */}
-      {/* <div className="status-card">
-        <p className="status-label">Frontend meets Backend</p>
-        <p className="status-message">Server says: {message}</p>
-      </div> */}
-      <header className="main-header">
-        <h1>Song Collection Dashboard</h1>
-        <p className="header-subtext">
-          Add tracks, organize details, and browse your collection in one place.
+  <div className="page-container">
+    {/* top bar with greeting and logout */}
+    <div className="dashboard-topbar">
+      <div className="dashboard-user">
+        <p className="dashboard-eyebrow">Music Map</p>
+        {user && (
+          <h2 className="dashboard-greeting">
+            Welcome back, {user.username}!
+          </h2>
+        )}
+        <p className="dashboard-subtext">
+          Build and manage your personal song collection.
         </p>
-      </header>
+      </div>
 
-      {/* <div className="lyric-testing">
-        <p>{lyrics.lyrics}</p>
-        <p>there should eb lyrics above me</p>
-      </div> */}
-      <div className="content-wrapper">
-        {/* /////////// RIGHT PANEL /////////// */}
-        {/* right panel: the grid of songs & changes to detailed view on click */}
-        <div className="right-panel">
-          {selectedSong ? (
-            /////////// DETAIL VIEW ///////////
+      <div className="profile-top-actions">
+        <Link to="/add-song" className="add-song-btn">
+          + Add Song
+        </Link>
 
-            <SongDetails //refactored
-              deleteSong={handleDelete}
-              song={selectedSong}
-              onBack={() => setSelectedSong(null)}
-            />
-          ) : (
-            // /////////// SONG GRID + SEARCH & FILTER ///////////
-            <>
-              <div className="filters">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  placeholder="Search by title, artist, or album"
-                  className="search-bar"
-                />
+        <Link to="/profile" className="profile-link-btn">
+          Profile
+        </Link>
 
-                <div className="filter-group">
-                  <h4>Genre</h4>
+        {user?.role === "admin" && (
+          <Link to="/admin" className="profile-link-btn">
+            Admin
+          </Link>
+        )}
 
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="genre"
-                      value="Pop"
-                      onChange={handleFilterChange}
-                    />
-                    Pop
-                  </label>
+        <button className="logout-btn" onClick={logout}>
+          Logout
+        </button>
+      </div>
+    </div>
 
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="genre"
-                      value="Rock"
-                      onChange={handleFilterChange}
-                    />
-                    Rock
-                  </label>
-
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="genre"
-                      value="Hip-Hop"
-                      onChange={handleFilterChange}
-                    />
-                    Hip-Hop
-                  </label>
-
-                  {/* add whatever other genres here */}
+    <div className="content-wrapper">
+      <div className="right-panel">
+        {selectedSong ? (
+          <SongDetails
+            deleteSong={handleDelete}
+            song={selectedSong}
+            onBack={() => setSelectedSong(null)}
+          />
+        ) : (
+          <>
+            {/* TOP PICKS BANNER */}
+            <section className="top-picks-banner">
+              <div className="top-picks-banner-header">
+                <div>
+                  <p className="top-picks-label">Featured Now</p>
+                  <h2>Top Picks</h2>
+                  <p className="top-picks-subtext">
+                    Today&apos;s top ten songs worldwide
+                  </p>
                 </div>
-
-                <div className="filter-group">
-                  <h4>Language</h4>
-
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="language"
-                      value="English"
-                      onChange={handleFilterChange}
-                    />
-                    English
-                  </label>
-
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="language"
-                      value="Spanish"
-                      onChange={handleFilterChange}
-                    />
-                    French
-                  </label>
-
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="language"
-                      value="Spanish"
-                      onChange={handleFilterChange}
-                    />
-                    Spanish
-                  </label>
-
-                  {/* add whatever other languages here */}
-                </div>
-
-                <div className="filter-group">
-                  <h4>Release Year</h4>
-
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="releaseYear"
-                      value="2024"
-                      onChange={handleFilterChange}
-                    />
-                    2024
-                  </label>
-
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="releaseYear"
-                      value="2023"
-                      onChange={handleFilterChange}
-                    />
-                    2023
-                  </label>
-                </div>
-
-                {/* add whatever other years here */}
               </div>
 
-              <div className="section-heading">
-                <h3>Top Picks</h3>
-                <p>Today's top ten songs worldwide</p>
-              </div>
-
-              <div className="song-grid">
-                {/* .map() loops through the 'songs' array.
-                For every song item, it creates a <div> (song-card).
-                */}
+              <div className="top-picks-row">
                 {topSongs.map((song) => (
                   <div
                     key={song?.uuid}
-                    className="song-card"
-                    // the 'key' prop is required by React for performance.
-                    // It helps React track which items changed, added, or removed
+                    className="top-pick-card"
                     onClick={() => handleTopTenSongClick(song)}
                   >
-                    <div className="image-container">
-                      {/* conditional rendering:
-                      IF song.imgUrl exists, show the Image.
-                      ELSE (:), show the "No Image" placeholder.
-                      */}
+                    <div className="top-pick-image">
                       {song?.imageUrl ? (
-                        <img src={song.imageUrl} alt={song.name} />
+                        <img src={song.imageUrl} alt={song.songName || song.name} />
                       ) : (
                         <div className="placeholder">Album art not found</div>
                       )}
                     </div>
 
-                    <div className="card-details">
+                    <div className="top-pick-details">
                       <h3>{song.songName || song.name}</h3>
-
-<p>
-  <strong>Artist:</strong> {song.artistName || song.creditName}
-</p>
-
-<p>
-  <strong>Album:</strong> {song.albumName || "N/A"}
-</p>
-
-<p>
-  <strong>Date:</strong> {song.releaseYear || "N/A"}
-</p>
-
-                      
+                      <p>{song.artistName || song.creditName}</p>
+                      <span>{song.albumName || "N/A"}</span>
                     </div>
                   </div>
                 ))}
               </div>
+            </section>
 
-              <div className="section-heading">
-                <h3>User-Submitted Collection</h3>
-                <p>{songs.length} song(s)</p>
+            <header className="main-header">
+              <h1>Song Collection Dashboard</h1>
+              <p className="header-subtext">
+                Add tracks, organize details, and browse your collection in one place.
+              </p>
+            </header>
+
+            <div className="filters">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search by title, artist, or album"
+                className="search-bar"
+              />
+
+              <div className="filter-group">
+                <h4>Genre</h4>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    name="genre"
+                    value="Pop"
+                    onChange={handleFilterChange}
+                  />
+                  Pop
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    name="genre"
+                    value="Rock"
+                    onChange={handleFilterChange}
+                  />
+                  Rock
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    name="genre"
+                    value="Hip-Hop"
+                    onChange={handleFilterChange}
+                  />
+                  Hip-Hop
+                </label>
               </div>
 
-              <div className="song-grid">
-                {/* .map() loops through the 'songs' array.
-                For every song item, it creates a <div> (song-card).
-                */}
-                {filteredSongs.map((song) => (
-                  <div
-                    key={song._id}
-                    className="song-card"
-                    // the 'key' prop is required by React for performance.
-                    // It helps React track which items changed, added, or removed
-                    onClick={() => setSelectedSong(song)}
-                  >
-                    <div className="image-container">
-                      {/* conditional rendering:
-                      IF song.imgUrl exists, show the Image.
-                      ELSE (:), show the "No Image" placeholder.
-                      */}
-                      {song.imgUrl ? (
-                        <img src={song.imgUrl} alt={song.title} />
-                      ) : (
-                        <div className="placeholder">No Cover</div>
-                      )}
-                    </div>
+              <div className="filter-group">
+                <h4>Language</h4>
 
-                    <div className="card-details">
-                      <h3>{song.title}</h3>
-                      <p>
-                        <strong>Artist:</strong> {song.artist}
-                      </p>
-                      <p>
-                        <strong>Album:</strong> {song.album}
-                      </p>
-                      <p>
-                        <strong>Date:</strong> {song.releaseDate}
-                      </p>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="language"
+                    value="English"
+                    onChange={handleFilterChange}
+                  />
+                  English
+                </label>
 
-                      {/* we use an arrow function here () => handleDelete(...)
-                      so the function only runs when CLICKED, not when the page
-                      loads. */}
+                <label>
+                  <input
+                    type="checkbox"
+                    name="language"
+                    value="Spanish"
+                    onChange={handleFilterChange}
+                  />
+                  French
+                </label>
 
-                      <button
-                        className="favorite-btn"
-                        onClick={(e) => {
-                          e.stopPropagation(); // prevents opening detail view
-                          handleToggleFavorite(song._id);
-                        }}
-                      >
-                        {favorites.includes(song._id)
-                          ? "★ Favourited"
-                          : "☆ Favourite"}
-                      </button>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="language"
+                    value="Spanish"
+                    onChange={handleFilterChange}
+                  />
+                  Spanish
+                </label>
+              </div>
 
-                    
-                    </div>
+              <div className="filter-group">
+                <h4>Release Year</h4>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    name="releaseYear"
+                    value="2026"
+                    onChange={handleFilterChange}
+                  />
+                  2026
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    name="releaseYear"
+                    value="2025"
+                    onChange={handleFilterChange}
+                  />
+                  2025
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    name="releaseYear"
+                    value="2024"
+                    onChange={handleFilterChange}
+                  />
+                  2024
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    name="releaseYear"
+                    value="2023"
+                    onChange={handleFilterChange}
+                  />
+                  2023
+                </label>
+              </div>
+            </div>
+
+            <div className="section-heading">
+              <h3>User-Submitted Collection</h3>
+              <p>{songs.length} song(s)</p>
+            </div>
+
+            <div className="song-grid">
+              {filteredSongs.map((song) => (
+                <div
+                  key={song._id}
+                  className="song-card"
+                  onClick={() => setSelectedSong(song)}
+                >
+                  <div className="image-container">
+                    {song.imgUrl ? (
+                      <img src={song.imgUrl} alt={song.title} />
+                    ) : (
+                      <div className="placeholder">No Cover</div>
+                    )}
                   </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
+
+                  <div className="card-details">
+                    <h3>{song.title}</h3>
+                    <p>
+                      <strong>Artist:</strong> {song.artist}
+                    </p>
+                    <p>
+                      <strong>Album:</strong> {song.album}
+                    </p>
+                    <p>
+                      <strong>Date:</strong> {song.releaseDate}
+                    </p>
+
+                    <button
+                      className="favorite-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleFavorite(song._id);
+                      }}
+                    >
+                      {favorites.includes(song._id)
+                        ? "★ Favourited"
+                        : "☆ Favourite"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default Dashboard;

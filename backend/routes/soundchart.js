@@ -5,9 +5,10 @@ const router = express.Router();
 const BASE_URL = "https://customer.api.soundcharts.com";
 
 const headers = {
-"x-app-id": "SCHANG6-API_41F9DF25",
-"x-api-key": "5db998d43b8358a4",
+"x-app-id": "MLAST-NAME1111-API_AF121AB2",
+"x-api-key": "3104d976743cfaa8",
 };
+
 
 function getLanguageLabel(code) {
   const map = {

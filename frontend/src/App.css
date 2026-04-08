@@ -950,3 +950,122 @@ html {
   margin-bottom: 20px;
 }
 
+.top-picks-banner {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #111827 0%, #1f2937 55%, #374151 100%);
+  color: white;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.top-picks-banner-header {
+  margin-bottom: 1.25rem;
+}
+
+.top-picks-label {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+}
+
+.top-picks-banner h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.top-picks-subtext {
+  margin-top: 0.4rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.top-picks-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.top-pick-card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease;
+  backdrop-filter: blur(8px);
+  box-sizing: border-box;
+}
+
+.top-pick-card:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.top-pick-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 0.85rem;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.top-pick-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.top-pick-details h3 {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: white;
+}
+
+.top-pick-details p {
+  margin: 0 0 0.3rem 0;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.top-pick-details span {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.top-picks-loading {
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0.5rem 0 0;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 1200px) {
+  .top-picks-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .top-picks-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .top-picks-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .top-picks-banner h2 {
+    font-size: 1.5rem;
+  }
+}
