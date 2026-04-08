@@ -1,25 +1,21 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom";
-import "./Dashboard.js";
 import "./App.css";
-import { AuthContext } from "./context/AuthContext"; // import the global "cloud" to access our token and user
+import { AuthContext } from "./context/AuthContext";
 import Comments from "./Comments";
 
 function SongDetails({ song, deleteSong, onBack }) {
-  const [lyrics, setLyrics] = useState(null); // null = not fetched yet
+  const { user } = useContext(AuthContext);
+
+  const [lyrics, setLyrics] = useState(null);
   const [isLoadingLyrics, setIsLoadingLyrics] = useState(false);
 
   useEffect(() => {
     const fetchLyrics = async () => {
       try {
-        console.log(song.artist);
-        console.log(song.title);
-
         const res = await fetch(
-          `http://localhost:5001/api/lyrics?artist=${encodeURIComponent(song.artist)}&title=${encodeURIComponent(song.title)}`,
+          `http://localhost:5001/api/lyrics?artist=${encodeURIComponent(song.artist)}&title=${encodeURIComponent(song.title)}`
         );
 
-        //check if response is 404 (no lyrics found)
         if (!res.ok) {
           setLyrics(null);
           return;
@@ -33,7 +29,6 @@ function SongDetails({ song, deleteSong, onBack }) {
         }
       } catch (err) {
         console.error("Error fetching lyrics test:", err);
-        console.error(err);
         setLyrics(null);
       } finally {
         setIsLoadingLyrics(false);
@@ -44,6 +39,9 @@ function SongDetails({ song, deleteSong, onBack }) {
   }, [song?.artist, song?.title]);
 
   const displayLyrics = lyrics || song.lyrics || null;
+
+  const isOwner = user && String(song.createdBy) === String(user.id);
+  const isAdmin = user?.role === "admin";
 
   return (
     <div className="card song-detail-card">
@@ -97,12 +95,15 @@ function SongDetails({ song, deleteSong, onBack }) {
       </div>
 
       <div className="detail-actions">
-        <button
-          className="secondary-btn-delete"
-          onClick={() => deleteSong(song._id)}
-        >
-          Delete Song
-        </button>
+        {(isOwner || isAdmin) && (
+          <button
+            className="secondary-btn-delete"
+            onClick={() => deleteSong(song._id)}
+          >
+            Delete Song
+          </button>
+        )}
+
         <button className="profile-link-btn" onClick={onBack}>
           ⬅ Back to Home
         </button>

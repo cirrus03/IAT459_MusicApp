@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
 import { AuthContext } from "./context/AuthContext";
+import SongDetails from "./SongDetails";
 
 function Profile() {
   const { token, logout } = useContext(AuthContext);
@@ -35,6 +36,7 @@ function Profile() {
     }
   }, [token]);
 
+  // remove a song from favorites
   const handleUnfavorite = async (songId) => {
     try {
       const res = await fetch(
@@ -64,6 +66,34 @@ function Profile() {
     }
   };
 
+  // delete one of the user's submitted songs
+  const handleDeleteSong = async (songId) => {
+    try {
+      const res = await fetch(`http://localhost:5001/api/songs/${songId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete song");
+      }
+
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        songs: prevProfile.songs.filter((song) => song._id !== songId),
+        favorites: prevProfile.favorites.filter((song) => song._id !== songId),
+      }));
+
+      if (selectedSong?._id === songId) {
+        setSelectedSong(null);
+      }
+    } catch (err) {
+      console.error("Error deleting song:", err);
+    }
+  };
+
   const handleUpdateUsername = async () => {
     try {
       setUsernameMessage("");
@@ -86,7 +116,6 @@ function Profile() {
 
       setProfile(data);
       setNewUsername("");
-      setIsEditing(false);
       setUsernameMessage("Username updated successfully.");
     } catch (err) {
       console.error("Error updating username:", err);
@@ -242,71 +271,11 @@ function Profile() {
             </p>
           </div>
         ) : selectedSong ? (
-          <div className="card song-detail-card">
-            <h2>Song Details</h2>
-
-            {selectedSong.imgUrl ? (
-              <img src={selectedSong.imgUrl} alt={selectedSong.title} />
-            ) : (
-              <div className="placeholder">No Cover</div>
-            )}
-
-            <table className="song-detail-table">
-              <tbody>
-                <tr>
-                  <th>Title</th>
-                  <td>{selectedSong.title || "N/A"}</td>
-                </tr>
-                <tr>
-                  <th>Artist</th>
-                  <td>{selectedSong.artist || "N/A"}</td>
-                </tr>
-                <tr>
-                  <th>Album</th>
-                  <td>{selectedSong.album || "N/A"}</td>
-                </tr>
-                <tr>
-                  <th>Release</th>
-                  <td>{selectedSong.releaseDate || "N/A"}</td>
-                </tr>
-                <tr>
-                  <th>Language</th>
-                  <td>{selectedSong.language || "N/A"}</td>
-                </tr>
-                <tr>
-                  <th>Genre</th>
-                  <td>{selectedSong.genre || "N/A"}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div className="lyrics-section">
-              <h3>Lyrics</h3>
-              {selectedSong.lyrics ? (
-                <p className="lyrics-text">{selectedSong.lyrics}</p>
-              ) : (
-                <p className="no-lyrics">No lyrics available</p>
-              )}
-            </div>
-
-            <div className="detail-actions">
-              {selectedSection === "favorites" && (
-                <button
-                  className="secondary-btn-delete"
-                  onClick={() => handleUnfavorite(selectedSong._id)}
-                >
-                  Remove from Favorites
-                </button>
-              )}
-
-              <button
-                className="secondary-btn"
-                onClick={() => setSelectedSong(null)}
-              >
-                ⬅ Back
-              </button>
-            </div>
-          </div>
+          <SongDetails
+            song={selectedSong}
+            deleteSong={handleDeleteSong}
+            onBack={() => setSelectedSong(null)}
+          />
         ) : (
           <div className="song-grid">
             {activeSongs.map((song) => (
@@ -347,6 +316,18 @@ function Profile() {
                       }}
                     >
                       Remove from Favorites
+                    </button>
+                  )}
+
+                  {selectedSection === "songs" && (
+                    <button
+                      className="delete-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteSong(song._id);
+                      }}
+                    >
+                      Delete Song
                     </button>
                   )}
                 </div>
