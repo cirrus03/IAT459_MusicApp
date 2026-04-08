@@ -207,6 +207,20 @@ html {
   transition: 0.2s ease;
 }
 
+.primary-btn-comment {
+  margin-top: 12px;
+  padding: 8px 14px;
+  background: #a855f7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  width: fit-content;        
+  align-self: flex-start;   
+}
+
 .song-form button:hover,
 .primary-btn:hover {
   background: #9333ea;

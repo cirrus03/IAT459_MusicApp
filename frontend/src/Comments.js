@@ -167,7 +167,7 @@ function Comments(songId) {
             placeholder="Enter your comment here"
             required
           />
-          <button className="primary-btn" type="submit">
+          <button className="primary-btn-comment" type="submit">
             Post comment
           </button>
         </form>
