@@ -8,7 +8,7 @@ function SongForm() {
   const navigate = useNavigate();
 
   // store the form inputs.
-  // we use a single object to hold all fields instead of creating 6 separate state variables.
+  // we use a single object to hold all fields instead of creating separate state variables.
   const [formData, setFormData] = useState({
     title: "",
     artist: "",
@@ -17,34 +17,33 @@ function SongForm() {
     language: "",
     genre: "",
     lyrics: "",
+    imgUrl: "",
   });
 
-  //event handles for typing in forms
-  // we use [e.target.name] as a dynamic key to update the correct field in the object
+  // event handler for typing in form fields
+  // [e.target.name] updates the correct field dynamically
   const handleChange = (e) => {
     setFormData({
-      ...formData, // spread operator: keep existing data (don't delete other fields) (immutability)
-      [e.target.name]: e.target.value, // overwrite only the field currently being typed in
+      ...formData,
+      [e.target.name]: e.target.value,
     });
   };
 
-  // handles the "Add Song" button click.
+  // handles the "Save Song" button click
   const handleSubmit = async (e) => {
-    e.preventDefault(); // stop the browser from reloading the page (standard form behavior)
+    e.preventDefault();
+
     try {
-      // send the new data to the Backend
       const response = await fetch("http://localhost:5001/api/songs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // attach the token to prove user is authorized
           Authorization: token,
         },
-        body: JSON.stringify(formData), // Convert JS object to JSON string
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        // redirect to dashboard after adding song
         navigate("/");
       } else {
         alert("Failed to add song.");
@@ -61,6 +60,7 @@ function SongForm() {
           <p className="dashboard-eyebrow">Music Map</p>
           <h2 className="dashboard-greeting">Add a New Song</h2>
         </div>
+
         <div className="profile-top-actions">
           <Link to="/" className="profile-link-btn">
             Home
@@ -79,13 +79,7 @@ function SongForm() {
           </p>
 
           <form onSubmit={handleSubmit} className="song-form">
-            <label>Name</label>
-
-            {/* Note on Inputs:
-                - 'name' attribute must match the state key (e.g. "commonName")
-                - 'value' binds the input to the state (Controlled Component)
-                - 'onChange' updates the state when typing
-                */}
+            <label>Title</label>
             <input
               name="title"
               value={formData.title}
@@ -140,6 +134,14 @@ function SongForm() {
               value={formData.lyrics}
               onChange={handleChange}
               placeholder="Optional lyric snippet"
+            />
+
+            <label>Cover Image URL</label>
+            <input
+              name="imgUrl"
+              value={formData.imgUrl}
+              onChange={handleChange}
+              placeholder="Paste an image URL"
             />
 
             <div className="form-actions-row">

@@ -23,7 +23,7 @@ const SongSchema = new mongoose.Schema({
   lyrics: {
     type: String,
   },
-  imageUrl: {
+  imgUrl: {
     type: String,
   },
 

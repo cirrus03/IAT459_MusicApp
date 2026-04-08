@@ -917,3 +917,12 @@ html {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 12px;
 }
+
+.song-detail-image {
+  width: 100%;
+  max-width: 320px;
+  border-radius: 12px;
+  display: block;
+  margin-bottom: 20px;
+}
+

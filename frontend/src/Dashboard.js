@@ -34,6 +34,7 @@ function Dashboard() {
     language: "",
     genre: "",
     lyrics: "",
+    imgUrl: "",
   });
 
   // states for searching and filtering
@@ -237,6 +238,7 @@ function Dashboard() {
         language: "",
         genre: "",
         lyrics: "",
+        imgUrl:"",
         source: "user",
       });
     } catch (err) {

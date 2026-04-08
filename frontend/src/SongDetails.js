@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import "./Dashboard.js";
+import "./App.css";
 import { AuthContext } from "./context/AuthContext"; // import the global "cloud" to access our token and user
 import Comments from "./Comments";
 
@@ -49,7 +50,7 @@ function SongDetails({ song, deleteSong, onBack }) {
       <h2>Song Details</h2>
 
       {song.imgUrl ? (
-        <img src={song.imgUrl} alt={song.title} />
+        <img className="song-detail-image" src={song.imgUrl} alt={song.title} />
       ) : (
         <div className="placeholder">No Cover</div>
       )}

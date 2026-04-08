@@ -49,6 +49,7 @@ router.post("/", verifyToken, async (req, res) => {
     language: req.body.language,
     genre: req.body.genre,
     lyrics: req.body.lyrics,
+    imgUrl: req.body.imgUrl,
 
     // save which logged-in user created the song
     createdBy: req.user.id,
@@ -78,7 +79,7 @@ router.post("/song-from-soundcharts", async (req, res) => {
         $set: {
           title: req.body.title,
           artist: req.body.artist,
-          imageUrl: req.body.imgUrl,
+          imgUrl: req.body.imgUrl,
         }
       },
       {
