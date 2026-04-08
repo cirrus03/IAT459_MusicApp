@@ -894,3 +894,26 @@ html {
 .admin-delete-btn:hover {
   background: #991b1b;
 }
+
+.visitor-card {
+  margin-bottom: 24px;
+}
+
+.general-song-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.visitor-locked-actions {
+  padding: 0 16px 16px 16px;
+}
+
+.visitor-locked-text {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #94a3b8;
+  line-height: 1.4;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 12px;
+}
