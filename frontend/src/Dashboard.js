@@ -653,15 +653,7 @@ function Dashboard() {
                           : "☆ Favourite"}
                       </button>
 
-                      <button
-                        className="delete-btn"
-                        onClick={(e) => {
-                          e.stopPropagation(); // prevents opening detail view when clicking delete
-                          handleDelete(song._id);
-                        }}
-                      >
-                        Delete
-                      </button>
+                    
                     </div>
                   </div>
                 ))}
