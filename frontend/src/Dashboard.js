@@ -586,17 +586,7 @@ const handleTopTenSongClick = async (chartSong) => {
   <strong>Date:</strong> {song.releaseYear || "N/A"}
 </p>
 
-                      <button
-                        className="favorite-btn"
-                        onClick={(e) => {
-                          e.stopPropagation(); // prevents opening detail view
-                          handleToggleFavorite(song._id);
-                        }}
-                      >
-                        {favorites.includes(song._id)
-                          ? "★ Favourited"
-                          : "☆ Favourite"}
-                      </button>
+                      
                     </div>
                   </div>
                 ))}
