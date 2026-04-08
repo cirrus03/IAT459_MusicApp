@@ -7,6 +7,7 @@ import Register from "./Register";
 import General from "./General";
 import Profile from "./Profile";
 import SongForm from "./SongForm";
+import Admin from "./Admin";
 
 function App() {
   return (
@@ -44,6 +45,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          
         </Routes>
       </Router>
     </AuthProvider>

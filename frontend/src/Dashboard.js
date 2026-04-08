@@ -384,58 +384,27 @@ function Dashboard() {
           <p className="dashboard-subtext">
             Build and manage your personal song collection.
           </p>
-
-          {/* only show this admin section if the logged-in user has admin role */}
-          {user?.role === "admin" && (
-            <div className="admin-panel-preview">
-              <h4>Admin Access Enabled</h4>
-              <p>
-                You have admin permissions. You can view the member list below.
-              </p>
-
-              <div className="admin-users-list">
-                <h5>Member List</h5>
-
-                {!Array.isArray(users) || users.length === 0 ? (
-                  <p className="admin-empty">No users found.</p>
-                ) : (
-                  users.map((member) => (
-                    <div key={member._id} className="admin-user-card">
-                      <p>
-                        <strong>Username:</strong> {member.username}
-                      </p>
-                      <p>
-                        <strong>Role:</strong> {member.role}
-                      </p>
-
-                      <button
-                        className="admin-delete-btn"
-                        onClick={() => handleDeleteUser(member._id)}
-                      >
-                        Delete User
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="profile-top-actions">
-          <Link to="/add-song" className="add-song-btn">
-            + Add Song
-          </Link>
-          <Link to="/profile" className="profile-link-btn">
-            Profile
-          </Link>
-          <Link to="/" className="profile-link-btn">
-            Home
-          </Link>
-          <button className="logout-btn" onClick={logout}>
-            Logout
-          </button>
-        </div>
+  <Link to="/add-song" className="add-song-btn">
+    + Add Song
+  </Link>
+
+  <Link to="/profile" className="profile-link-btn">
+    Profile
+  </Link>
+
+  {user?.role === "admin" && (
+    <Link to="/admin" className="profile-link-btn">
+      Admin
+    </Link>
+  )}
+
+  <button className="logout-btn" onClick={logout}>
+    Logout
+  </button>
+</div>
       </div>
       {/* small backend status card */}
       {/* <div className="status-card">

@@ -842,3 +842,55 @@ html {
   padding: 6px 10px;
   font-size: 0.75rem;
 }
+
+/* admin tabs */
+.admin-tabs {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.admin-tab {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.admin-tab:hover {
+  background: #1e293b;
+}
+
+.active-tab {
+  background: #a855f7;
+  color: white;
+  border: none;
+}
+
+/* admin cards */
+.admin-user-card {
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  background: #020617;
+  border: 1px solid #1e293b;
+}
+
+/* delete button */
+.admin-delete-btn {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #7f1d1d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.admin-delete-btn:hover {
+  background: #991b1b;
+}
