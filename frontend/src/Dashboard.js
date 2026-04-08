@@ -92,24 +92,31 @@ function Dashboard() {
 
   //soundcharts call
   useEffect(() => {
-    const fetchSoundchartChart = async () => {
-      try {
-        const res = await fetch("http://localhost:5001/api/soundchart/chart", {
-          method: "GET",
-        });
-        const data = await res.json();
+  const fetchSoundchartChart = async () => {
+    try {
+      const res = await fetch("http://localhost:5001/api/soundchart/chart", {
+        method: "GET",
+      });
 
-        console.log("this is what the frontend received from the backend: ");
-        console.log(data);
+      const data = await res.json();
 
+      console.log("frontend received from backend:", data);
+      console.log("is array?", Array.isArray(data));
+
+      if (Array.isArray(data)) {
         setTopSongs(data);
-      } catch (err) {
-        console.error("Error fetching soundchart chart:", err);
+      } else {
+        console.error("Expected array but got:", data);
+        setTopSongs([]);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching soundchart chart:", err);
+      setTopSongs([]);
+    }
+  };
 
-    fetchSoundchartChart();
-  }, []);
+  fetchSoundchartChart();
+}, []);
 
   //fetching song list
   useEffect(() => {
@@ -317,58 +324,46 @@ function Dashboard() {
     return searchMatch && genreMatch && languageMatch && yearMatch;
   });
 
-  // delete a user (admin only)
-  const handleDeleteUser = async (id) => {
-    try {
-      const res = await fetch(`http://localhost:5001/api/admin/users/${id}`, {
-        method: "DELETE",
+const handleTopTenSongClick = async (chartSong) => {
+  try {
+    const res = await fetch(
+      "http://localhost:5001/api/songs/song-from-soundcharts",
+      {
+        method: "POST",
         headers: {
-          Authorization: token,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+        uuid: chartSong.uuid,
+        title: chartSong.songName || chartSong.name,
+        artist: chartSong.artistName || chartSong.creditName,
+        album: chartSong.albumName || "N/A",
+        releaseDate: chartSong.releaseYear || "N/A",
+        language: chartSong.language || "N/A",
+        genre: chartSong.genre || "N/A",
+        imgUrl: chartSong.imageUrl,
+        source: "soundcharts",
+        }),
+      }
+    );
+
+    const savedToDbSong = await res.json();
+
+    if (res.ok) {
+      setSelectedSong({
+        ...savedToDbSong, // contains _id for comments/favorites
+
+        // overwrite/add richer data from Soundcharts
+        album: chartSong.albumName,
+        releaseDate: chartSong.releaseYear,
+        language: chartSong.language,
+        genre: chartSong.genre,
       });
-
-      if (!res.ok) {
-        throw new Error("Failed to delete user");
-      }
-
-      // update frontend state
-      setUsers(users.filter((user) => user._id !== id));
-    } catch (err) {
-      console.error(err);
-      alert("Could not delete user");
     }
-  };
-
-  const handleTopTenSongClick = async (chartSong) => {
-    try {
-      const res = await fetch(
-        "http://localhost:5001/api/songs/song-from-soundcharts",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify({
-            uuid: chartSong.uuid,
-            title: chartSong.name,
-            artist: chartSong.creditName,
-            imgUrl: chartSong.imageUrl,
-          }),
-        },
-      );
-
-      const savedToDbSong = await res.json();
-      console.log(savedToDbSong);
-      if(res.ok) {
-        setSelectedSong(savedToDbSong);
-        console.log("res ok");
-      }
-      
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   //UI
   return (
@@ -577,20 +572,31 @@ function Dashboard() {
                     </div>
 
                     <div className="card-details">
-                      <h3>{song.name}</h3>
-                      <p>
-                        <strong>Artist:</strong> {song.creditName}
-                      </p>
+                      <h3>{song.songName || song.name}</h3>
 
-                      {/* <button
+<p>
+  <strong>Artist:</strong> {song.artistName || song.creditName}
+</p>
+
+<p>
+  <strong>Album:</strong> {song.albumName || "N/A"}
+</p>
+
+<p>
+  <strong>Date:</strong> {song.releaseYear || "N/A"}
+</p>
+
+                      <button
                         className="favorite-btn"
                         onClick={(e) => {
                           e.stopPropagation(); // prevents opening detail view
                           handleToggleFavorite(song._id);
                         }}
                       >
-                        {favorites.includes(song._id) ? "★ Favourited" : "☆ Favourite"}
-                      </button> */}
+                        {favorites.includes(song._id)
+                          ? "★ Favourited"
+                          : "☆ Favourite"}
+                      </button>
                     </div>
                   </div>
                 ))}

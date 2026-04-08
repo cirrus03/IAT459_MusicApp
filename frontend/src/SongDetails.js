@@ -9,11 +9,28 @@ function SongDetails({ song, deleteSong, onBack }) {
   const [lyrics, setLyrics] = useState(null);
   const [isLoadingLyrics, setIsLoadingLyrics] = useState(false);
 
+  // normalize song fields so both user-submitted songs
+  // and Soundcharts songs work in the same component
+  const title = song?.title || song?.songName || "N/A";
+  const artist = song?.artist || song?.artistName || "N/A";
+  const album = song?.album || song?.albumName || "N/A";
+  const release = song?.releaseDate || song?.releaseYear || "N/A";
+  const language = song?.language || "N/A";
+  const genre = song?.genre || "N/A";
+  const image = song?.imgUrl || song?.imageUrl || "N/A";
+
   useEffect(() => {
     const fetchLyrics = async () => {
+      if (!artist || !title || artist === "N/A" || title === "N/A") {
+        setLyrics(null);
+        return;
+      }
+
+      setIsLoadingLyrics(true);
+
       try {
         const res = await fetch(
-          `http://localhost:5001/api/lyrics?artist=${encodeURIComponent(song.artist)}&title=${encodeURIComponent(song.title)}`
+          `http://localhost:5001/api/lyrics?artist=${encodeURIComponent(artist)}&title=${encodeURIComponent(title)}`
         );
 
         if (!res.ok) {
@@ -22,13 +39,14 @@ function SongDetails({ song, deleteSong, onBack }) {
         }
 
         const data = await res.json();
+
         if (data?.lyrics && data.lyrics.trim() !== "") {
           setLyrics(data.lyrics);
         } else {
           setLyrics(null);
         }
       } catch (err) {
-        console.error("Error fetching lyrics test:", err);
+        console.error("Error fetching lyrics:", err);
         setLyrics(null);
       } finally {
         setIsLoadingLyrics(false);
@@ -36,19 +54,19 @@ function SongDetails({ song, deleteSong, onBack }) {
     };
 
     fetchLyrics();
-  }, [song?.artist, song?.title]);
+  }, [artist, title]);
 
-  const displayLyrics = lyrics || song.lyrics || null;
+  const displayLyrics = lyrics || song?.lyrics || null;
 
-  const isOwner = user && String(song.createdBy) === String(user.id);
+  const isOwner = user && String(song?.createdBy) === String(user?.id);
   const isAdmin = user?.role === "admin";
 
   return (
     <div className="card song-detail-card">
       <h2>Song Details</h2>
 
-      {song.imgUrl ? (
-        <img className="song-detail-image" src={song.imgUrl} alt={song.title} />
+      {image && image !== "N/A" ? (
+        <img className="song-detail-image" src={image} alt={title} />
       ) : (
         <div className="placeholder">No Cover</div>
       )}
@@ -57,27 +75,27 @@ function SongDetails({ song, deleteSong, onBack }) {
         <tbody>
           <tr>
             <th>Title</th>
-            <td>{song.title || "N/A"}</td>
+            <td>{title}</td>
           </tr>
           <tr>
             <th>Artist</th>
-            <td>{song.artist || "N/A"}</td>
+            <td>{artist}</td>
           </tr>
           <tr>
             <th>Album</th>
-            <td>{song.album || "N/A"}</td>
+            <td>{album}</td>
           </tr>
           <tr>
             <th>Release</th>
-            <td>{song.releaseDate || "N/A"}</td>
+            <td>{release}</td>
           </tr>
           <tr>
             <th>Language</th>
-            <td>{song.language || "N/A"}</td>
+            <td>{language}</td>
           </tr>
           <tr>
             <th>Genre</th>
-            <td>{song.genre || "N/A"}</td>
+            <td>{genre}</td>
           </tr>
         </tbody>
       </table>
@@ -95,7 +113,7 @@ function SongDetails({ song, deleteSong, onBack }) {
       </div>
 
       <div className="detail-actions">
-        {(isOwner || isAdmin) && (
+        {(isOwner || isAdmin) && song?._id && (
           <button
             className="secondary-btn-delete"
             onClick={() => deleteSong(song._id)}
@@ -109,7 +127,7 @@ function SongDetails({ song, deleteSong, onBack }) {
         </button>
       </div>
 
-      <Comments songId={song._id} />
+      {song?._id && <Comments songId={song._id} />}
     </div>
   );
 }

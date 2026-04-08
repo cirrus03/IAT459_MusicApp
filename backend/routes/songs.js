@@ -64,37 +64,45 @@ router.post("/", verifyToken, async (req, res) => {
 });
 
 //POST ROUTE (specfically for when a top10 soundchart recc is clicked to create/find an existing db entry or whatever kill me now)
+// POST ROUTE for clicked Soundcharts songs
 router.post("/song-from-soundcharts", async (req, res) => {
-  console.log("i am inside the song-from-soundcharts route post")
-  console.log("uuid: ", req.body.uuid);
-  console.log("title: ", req.body.title);
-  console.log("artist: ", req.body.artist);
-  console.log("uuid: ", req.body.imgUrl);
+  console.log("inside /song-from-soundcharts");
+  console.log("uuid:", req.body.uuid);
+  console.log("title:", req.body.title);
+  console.log("artist:", req.body.artist);
+  console.log("album:", req.body.album);
+  console.log("releaseDate:", req.body.releaseDate);
+  console.log("language:", req.body.language);
+  console.log("genre:", req.body.genre);
+  console.log("imgUrl:", req.body.imgUrl);
 
   try {
-    console.log("inside try block db update");
     const song = await Song.findOneAndUpdate(
-      {externalId: req.body.uuid},
+      { externalId: req.body.uuid },
       {
         $set: {
           title: req.body.title,
           artist: req.body.artist,
+          album: req.body.album,
+          releaseDate: req.body.releaseDate,
+          language: req.body.language,
+          genre: req.body.genre,
           imgUrl: req.body.imgUrl,
-        }
+          source: "soundcharts",
+        },
       },
       {
-        new: true, //apparently will return the updated doc instead of old one if it finds it
-        upsert: true, //..probably makes the new doc if it can find it from what i understand
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true,
       }
     );
 
-    console.log("this is the song: ", song);
+    console.log("saved/updated song:", song);
     res.json(song);
-
-  } catch(error) {
-    res.status(500).json( {message: error.message} );
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-
 });
 
 // DELETE ROUTE
