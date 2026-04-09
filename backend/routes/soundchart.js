@@ -5,8 +5,8 @@ const router = express.Router();
 const BASE_URL = "https://customer.api.soundcharts.com";
 
 const headers = {
-"x-app-id": "MLAST-NAME1111-API_AF121AB2",
-"x-api-key": "3104d976743cfaa8",
+"x-app-id": "MREZAZADEH-API_9DDC5E92",
+"x-api-key": "2d285decc39ac683",
 };
 
 
